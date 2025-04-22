@@ -1,5 +1,4 @@
-
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Bar,
   BarChart,
@@ -8,6 +7,7 @@ import {
   YAxis,
   Tooltip,
   ReferenceLine,
+  Area,
   ComposedChart
 } from "recharts";
 import { generateHistogramBins, calculateMean, calculateStandardDeviation } from "@/utils/distributions";
