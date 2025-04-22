@@ -12,7 +12,6 @@ interface ControlPanelProps {
   setDistribution: (value: string) => void;
   onSample: () => void;
   onReset: () => void;
-  onExport: () => void;
   activeScenario: string | null;
   setActiveScenario: (value: string | null) => void;
 }
@@ -26,7 +25,6 @@ export function ControlPanel({
   setDistribution,
   onSample,
   onReset,
-  onExport,
   activeScenario,
   setActiveScenario,
 }: ControlPanelProps) {
@@ -53,7 +51,6 @@ export function ControlPanel({
       <ControlActions
         onSample={onSample}
         onReset={onReset}
-        onExport={onExport}
       />
     </Card>
   );

@@ -1,6 +1,41 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { AreaChart, ChartPie, ScatterChart } from "lucide-react";
+
+// Added population distribution summary theories
+const POPULATION_THEORIES = [
+  {
+    key: "normal",
+    title: "Normal Population",
+    description: "The population is perfectly symmetric, bell-shaped, centered at μ = 50. Most values cluster at the mean. Sampling from this yields means that are also normally distributed."
+  },
+  {
+    key: "uniform",
+    title: "Uniform Population",
+    description: "The population is evenly spread; all values between a and b are equally likely. The distribution is flat. Sampling from this yields sample means with distributions that become normal as sample size increases, thanks to the CLT."
+  },
+  {
+    key: "skewed",
+    title: "Right-Skewed Population",
+    description: "A long right tail, with many lower values and fewer extreme high values. The sample mean will tend to normalize with larger sample size but the original population is highly skewed."
+  },
+  {
+    key: "bimodal",
+    title: "Bimodal Population",
+    description: "A combination of two distinct peaks. The population is not unimodal, so its mean is between the two peaks. Sampling means from this shape ultimately yield an approximately normal distribution for large n."
+  },
+  {
+    key: "laplace",
+    title: "Laplace Population",
+    description: "Looks like a normal but is more sharply peaked at the center and has heavier tails. Large values (outliers) are more likely than with normal; sample means still normalize with large n."
+  },
+  {
+    key: "student-t",
+    title: "Student's t Population",
+    description: "Like normal but with much heavier tails; more likely to have outlier values. As n grows, sample means tend to normality, but individual samples may be much more variable."
+  }
+];
 
 const THEORIES = [
   {
@@ -15,8 +50,8 @@ const THEORIES = [
       "Variance (σ²): 225"
     ],
     formula: {
-      main: "f(x) = (1/σ√2π) × e^(-((x-μ)²/2σ²))",
-      sampling: "X̄ ~ N(μ, σ²/n)"
+      main: <span><strong>f(x) = (1/σ√2π) × e^(-((x-μ)²/2σ²))</strong></span>,
+      sampling: <span><strong>X̄ ~ N(μ, σ²/n)</strong></span>
     }
   },
   {
@@ -31,8 +66,8 @@ const THEORIES = [
       "Standard Deviation (σ) = (b - a)/√12 ≈ 23.1"
     ],
     formula: {
-      main: "f(x) = 1/(b-a) for x ∈ [a,b]",
-      sampling: "X̄ ~ N(μ, σ²/n) as n → ∞"
+      main: <span><strong>f(x) = 1/(b-a) for x ∈ [a,b]</strong></span>,
+      sampling: <span><strong>X̄ ~ N(μ, σ²/n) as n → ∞</strong></span>
     }
   },
   {
@@ -47,8 +82,8 @@ const THEORIES = [
       "Variance (σ²) = 1/λ² × 400"
     ],
     formula: {
-      main: "f(x) = λe^(-λx) for x ≥ 0",
-      sampling: "X̄ ~ N(μ, σ²/n) as n → ∞"
+      main: <span><strong>f(x) = λe^(-λx) for x ≥ 0</strong></span>,
+      sampling: <span><strong>X̄ ~ N(μ, σ²/n) as n → ∞</strong></span>
     }
   },
   {
@@ -63,8 +98,8 @@ const THEORIES = [
       "Standard Deviation (σ) = 20"
     ],
     formula: {
-      main: "f(x) = 0.5φ((x-30)/10) + 0.5φ((x-70)/10)",
-      sampling: "X̄ ~ N(μ, σ²/n) as n → ∞"
+      main: <span><strong>f(x) = 0.5φ((x-30)/10) + 0.5φ((x-70)/10)</strong></span>,
+      sampling: <span><strong>X̄ ~ N(μ, σ²/n) as n → ∞</strong></span>
     }
   },
   {
@@ -80,8 +115,8 @@ const THEORIES = [
       "Standard Deviation (σ) = √2b ≈ 14.14"
     ],
     formula: {
-      main: "f(x) = (1/(2b))·e^{-|x-μ|/b}",
-      sampling: "X̄ ~ N(μ, 2b²/n) as n → ∞"
+      main: <span><strong>f(x) = (1/(2b))·e<sup>-|x-μ|/b</sup></strong></span>,
+      sampling: <span><strong>X̄ ~ N(μ, 2b²/n) as n → ∞</strong></span>
     }
   },
   {
@@ -94,11 +129,11 @@ const THEORIES = [
       "Degrees of Freedom (ν) = 5",
       "Mean (μ) = 50",
       "Scale (s) = 10",
-      "Variance (ν>2): (ν/(ν-2))·s²",
+      "Variance (ν&gt;2): (ν/(ν-2))·s²",
     ],
     formula: {
-      main: "f(x) = Γ((ν+1)/2) / [√(νπ)·Γ(ν/2)]·[1 + (x-μ)²/(νs²)]^(-(ν+1)/2)",
-      sampling: "X̄ ~ N(μ, s²/n) as n → ∞"
+      main: <span><strong>f(x) = Γ((ν+1)/2) / [√(νπ)·Γ(ν/2)]·[1 + (x-μ)²/(νs²)]<sup>-(ν+1)/2</sup></strong></span>,
+      sampling: <span><strong>X̄ ~ N(μ, s²/n) as n → ∞</strong></span>
     }
   }
 ];
@@ -110,52 +145,70 @@ interface DistributionTheoryTabsProps {
 
 export function DistributionTheoryTabs({ distribution, onTabChange }: DistributionTheoryTabsProps) {
   return (
-    <Tabs defaultValue={distribution} className="w-full">
-      <TabsList className="grid grid-cols-6 mb-2 overflow-x-auto">
+    <div className="space-y-4">
+      <div>
+        <h4 className="font-semibold text-base mb-1">Population Theory</h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+          {POPULATION_THEORIES.map((pop) => (
+            <div 
+              key={pop.key}
+              className="bg-muted border rounded-md p-2 text-[13px] min-h-[70px] flex flex-col justify-center"
+            >
+              <span className="font-semibold">{pop.title}</span>
+              <span className="text-muted-foreground">{pop.description}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <Tabs defaultValue={distribution} className="w-full">
+        <TabsList className="flex flex-wrap gap-2 mb-2">
+          {THEORIES.map((theory) => (
+            <TabsTrigger 
+              key={theory.key}
+              value={theory.key}
+              onClick={() => onTabChange?.(theory.key)}
+            >
+              {theory.title}
+            </TabsTrigger>
+          ))}
+        </TabsList>
         {THEORIES.map((theory) => (
-          <TabsTrigger 
-            key={theory.key}
-            value={theory.key}
-            onClick={() => onTabChange?.(theory.key)}
-          >
-            {theory.title}
-          </TabsTrigger>
-        ))}
-      </TabsList>
-      {THEORIES.map((theory) => (
-        <TabsContent key={theory.key} value={theory.key}>
-          <Card>
-            <CardContent className="pt-4">
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  {theory.icon}
-                  <h3 className="font-medium text-lg">{theory.title}</h3>
-                  <code className="text-sm font-mono bg-muted px-2 py-0.5 rounded-lg">{theory.symbol}</code>
-                </div>
-                <p className="text-sm text-muted-foreground">{theory.description}</p>
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm">Parameters & Statistics:</h4>
-                  <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                    {theory.properties.map((property, index) => (
-                      <li key={index}>{property}</li>
-                    ))}
-                  </ul>
-                </div>
-                {theory.formula.main && (
-                  <div className="space-y-2">
-                    <h4 className="font-medium text-sm">Probability Density Function:</h4>
-                    <div className="text-base font-mono bg-muted/90 p-3 rounded-lg overflow-x-auto dark:bg-muted/20 border border-muted-foreground/20 my-1 leading-normal break-all">{theory.formula.main}</div>
-                    <h4 className="font-medium text-sm pt-2">Sampling Distribution:</h4>
-                    <div className="text-base font-mono bg-muted/90 p-3 rounded-lg overflow-x-auto dark:bg-muted/20 border border-muted-foreground/20 my-1 leading-normal break-all">
-                      {theory.formula.sampling}
-                    </div>
+          <TabsContent key={theory.key} value={theory.key}>
+            <Card>
+              <CardContent className="pt-4">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    {theory.icon}
+                    <h3 className="font-medium text-lg">{theory.title}</h3>
+                    <code className="text-sm font-mono bg-muted px-2 py-0.5 rounded-lg">{theory.symbol}</code>
                   </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      ))}
-    </Tabs>
+                  <p className="text-sm text-muted-foreground">{theory.description}</p>
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-sm">Parameters & Statistics:</h4>
+                    <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                      {theory.properties.map((property, index) => (
+                        <li key={index}>{property}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  {theory.formula.main && (
+                    <div className="space-y-2">
+                      <h4 className="font-medium text-sm">Probability Density Function:</h4>
+                      <div className="text-base font-mono bg-muted/90 p-3 rounded-lg overflow-x-auto dark:bg-muted/20 border border-muted-foreground/20 my-1 leading-normal break-all font-bold">
+                        {theory.formula.main}
+                      </div>
+                      <h4 className="font-medium text-sm pt-2">Sampling Distribution:</h4>
+                      <div className="text-base font-mono bg-muted/90 p-3 rounded-lg overflow-x-auto dark:bg-muted/20 border border-muted-foreground/20 my-1 leading-normal break-all font-bold">
+                        {theory.formula.sampling}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        ))}
+      </Tabs>
+    </div>
   );
 }

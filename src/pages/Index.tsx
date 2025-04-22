@@ -75,13 +75,6 @@ const Index = () => {
     setSamplesGenerated(0);
   };
 
-  // Export chart as PNG
-  const handleExport = () => {
-    if (samplingChartRef.current) {
-      exportToPNG(samplingChartRef, 'clt-sampling-distribution.png');
-    }
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-background" ref={mainContainerRef}>
       <Navbar />
@@ -95,17 +88,18 @@ const Index = () => {
           setDistribution={setDistribution}
           onSample={generateSamples}
           onReset={resetSampling}
-          onExport={handleExport}
           activeScenario={activeScenario}
           setActiveScenario={setActiveScenario}
         />
 
-        <div className={`grid ${isMobile ? 'grid-cols-1 gap-4' : 'grid-cols-1 md:grid-cols-2 gap-6'} h-[250px]`}>
+        <div className={`grid ${isMobile ? 'grid-cols-1 gap-4' : 'grid-cols-1 md:grid-cols-2 gap-6'} ${isMobile ? 'h-[360px]' : 'h-[250px]'}`}>
           <ChartContainer title="Population Distribution">
-            <PopulationChart distribution={distribution} />
+            <div className={`w-full h-full ${isMobile ? "min-h-[160px] h-[170px]" : "h-full"}`}>
+              <PopulationChart distribution={distribution} />
+            </div>
           </ChartContainer>
           <ChartContainer title="Sampling Distribution of the Mean">
-            <div ref={samplingChartRef} className="w-full h-full">
+            <div ref={samplingChartRef} className={`w-full h-full ${isMobile ? "min-h-[160px] h-[170px]" : "h-full"}`}>
               <SamplingChart
                 sampleMeans={sampleMeans}
                 colorGroups={true}
