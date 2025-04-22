@@ -1,6 +1,6 @@
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Calculator, Sigma, Pi } from "lucide-react";
+import { Sigma, Pi } from "lucide-react";
 
 interface StatisticsPanelProps {
   distribution: string;
@@ -108,71 +108,53 @@ export function StatisticsPanel({ distribution, sampleMeans, sampleSize }: Stati
   const theoretical = getTheoreticalValues();
 
   return (
-    <Card className="w-full">
-      <CardContent className="pt-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <h3 className="font-medium flex items-center gap-2">
-              <Sigma className="h-5 w-5" /> Population Parameters
-            </h3>
-            <p className="text-sm text-muted-foreground">Distribution: {theoretical.symbol}</p>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="p-2 bg-muted rounded-lg">
-                {theoretical.mean}
-              </div>
-              <div className="p-2 bg-muted rounded-lg">
-                {theoretical.stdDev}
-              </div>
-              <div className="p-2 bg-muted rounded-lg">
-                {theoretical.variance}
-              </div>
-              <div className="p-2 bg-muted rounded-lg">
-                {theoretical.sem}
-              </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <Card className="w-full">
+        <CardContent className="pt-4">
+          <h3 className="font-medium flex items-center gap-2 mb-2">
+            <Sigma className="h-5 w-5" /> Population Parameters
+          </h3>
+          <p className="text-sm text-muted-foreground mb-2">Distribution: {theoretical.symbol}</p>
+          <div className="grid grid-cols-2 gap-2 text-sm">
+            <div className="p-2 bg-muted rounded-lg">
+              {theoretical.mean}
+            </div>
+            <div className="p-2 bg-muted rounded-lg">
+              {theoretical.stdDev}
+            </div>
+            <div className="p-2 bg-muted rounded-lg">
+              {theoretical.variance}
+            </div>
+            <div className="p-2 bg-muted rounded-lg">
+              {theoretical.sem}
             </div>
           </div>
-          
-          <div className="space-y-2">
-            <h3 className="font-medium flex items-center gap-2">
-              <Pi className="h-5 w-5" /> Sample Statistics
-            </h3>
-            <p className="text-sm text-muted-foreground">Based on {sampleMeans.length} samples of size {sampleSize}</p>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="p-2 bg-muted rounded-lg">
-                x̄ = {stats.mean}
-              </div>
-              <div className="p-2 bg-muted rounded-lg">
-                s = {stats.stdDev}
-              </div>
-              <div className="p-2 bg-muted rounded-lg">
-                s² = {stats.variance}
-              </div>
-              <div className="p-2 bg-muted rounded-lg">
-                SEM = {stats.sem}
-              </div>
+        </CardContent>
+      </Card>
+      <Card className="w-full">
+        <CardContent className="pt-4">
+          <h3 className="font-medium flex items-center gap-2 mb-2">
+            <Pi className="h-5 w-5" /> Sample Statistics
+          </h3>
+          <p className="text-sm text-muted-foreground mb-2">
+            Based on {sampleMeans.length} samples of size {sampleSize}
+          </p>
+          <div className="grid grid-cols-2 gap-2 text-sm">
+            <div className="p-2 bg-muted rounded-lg">
+              x̄ = {stats.mean}
+            </div>
+            <div className="p-2 bg-muted rounded-lg">
+              s = {stats.stdDev}
+            </div>
+            <div className="p-2 bg-muted rounded-lg">
+              s² = {stats.variance}
+            </div>
+            <div className="p-2 bg-muted rounded-lg">
+              SEM = {stats.sem}
             </div>
           </div>
-          
-          <div className="space-y-2">
-            <h3 className="font-medium flex items-center gap-2">
-              <Calculator className="h-5 w-5" /> Central Limit Theorem
-            </h3>
-            <p className="text-sm text-muted-foreground">Statistical Effects</p>
-            <div className="p-2 bg-muted rounded-lg text-sm">
-              <p>Standard Error of the Mean (SEM): <strong>{stats.sem}</strong></p>
-              <p className="text-xs text-muted-foreground mt-1">{theoretical.semExplanation}</p>
-            </div>
-            <div className="p-2 bg-muted rounded-lg text-sm">
-              <p>Expected normalization: {sampleSize < 30 ? "Partial" : "Strong"}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {sampleSize < 30 
-                  ? "Sample size < 30: CLT beginning to take effect" 
-                  : "Sample size ≥ 30: CLT strongly in effect"}
-              </p>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
