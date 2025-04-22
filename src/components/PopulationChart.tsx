@@ -6,9 +6,10 @@ import {
   ResponsiveContainer,
   XAxis,
   YAxis,
-  Tooltip
+  Tooltip,
+  ReferenceLine
 } from "recharts";
-import { generateDistributionData } from "@/utils/distributions";
+import { generateDistributionData, generateHistogramBins } from "@/utils/distributions";
 
 interface PopulationChartProps {
   distribution: string;
@@ -16,37 +17,19 @@ interface PopulationChartProps {
 
 export function PopulationChart({ distribution }: PopulationChartProps) {
   const [data, setData] = useState<{ x: number; y: number }[]>([]);
+  const [populationMean, setPopulationMean] = useState<number | null>(null);
 
   useEffect(() => {
     // Generate data points for the selected distribution
-    const populationData = generateDistributionData(distribution, 1000);
+    const populationData = generateDistributionData(distribution, 2000);
     
-    // Create bins for visualization
-    const bins: Record<number, number> = {};
-    const min = Math.floor(Math.min(...populationData));
-    const max = Math.ceil(Math.max(...populationData));
-    const binWidth = (max - min) / 30;
+    // Calculate the mean
+    const mean = populationData.reduce((sum, val) => sum + val, 0) / populationData.length;
+    setPopulationMean(mean);
     
-    // Initialize bins
-    for (let i = min; i <= max; i += binWidth) {
-      bins[i] = 0;
-    }
-    
-    // Count values in each bin
-    populationData.forEach(value => {
-      const binKey = Math.floor((value - min) / binWidth) * binWidth + min;
-      if (bins[binKey] !== undefined) {
-        bins[binKey] += 1;
-      }
-    });
-    
-    // Convert to array format for Recharts
-    const chartData = Object.entries(bins).map(([x, y]) => ({
-      x: parseFloat(x),
-      y: y / populationData.length // Normalize to get density
-    }));
-    
-    setData(chartData);
+    // Create bins for visualization with more detail
+    const histogramData = generateHistogramBins(populationData, 40);
+    setData(histogramData);
   }, [distribution]);
 
   return (
@@ -64,6 +47,14 @@ export function PopulationChart({ distribution }: PopulationChartProps) {
           formatter={(value: number) => [value.toFixed(3), "Density"]}
           labelFormatter={(value) => `Value: ${parseFloat(value).toFixed(1)}`}
         />
+        {populationMean !== null && (
+          <ReferenceLine
+            x={populationMean}
+            stroke="hsl(var(--chart-primary))"
+            strokeDasharray="3 3"
+            label={{ value: `μ = ${populationMean.toFixed(1)}`, position: 'top' }}
+          />
+        )}
         <Area 
           type="monotone" 
           dataKey="y" 

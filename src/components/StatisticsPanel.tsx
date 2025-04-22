@@ -1,6 +1,6 @@
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Sigma, Pi } from "lucide-react";
+import { Calculator, Sigma, Pi } from "lucide-react";
 
 interface StatisticsPanelProps {
   distribution: string;
@@ -11,52 +11,95 @@ interface StatisticsPanelProps {
 export function StatisticsPanel({ distribution, sampleMeans, sampleSize }: StatisticsPanelProps) {
   // Calculate statistics for sample means
   const calculateStats = () => {
-    if (sampleMeans.length === 0) return { mean: 0, variance: 0, stdDev: 0 };
+    if (sampleMeans.length === 0) return { mean: 0, variance: 0, stdDev: 0, sem: 0 };
     
     const mean = sampleMeans.reduce((sum, value) => sum + value, 0) / sampleMeans.length;
     const variance = sampleMeans.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) / sampleMeans.length;
     const stdDev = Math.sqrt(variance);
+    // Standard Error of the Mean (SEM) calculation
+    const sem = stdDev / Math.sqrt(sampleSize);
     
-    return { mean: mean.toFixed(2), variance: variance.toFixed(2), stdDev: stdDev.toFixed(2) };
+    return { 
+      mean: mean.toFixed(2), 
+      variance: variance.toFixed(2), 
+      stdDev: stdDev.toFixed(2),
+      sem: sem.toFixed(2)
+    };
   };
 
   // Get theoretical values based on distribution type
   const getTheoreticalValues = () => {
     switch (distribution) {
       case "normal":
+        // For normal distribution
+        const popStdDev = 15;
+        const popMean = 50;
+        const theoreticalSEM = (popStdDev / Math.sqrt(sampleSize)).toFixed(2);
+        
         return {
-          mean: "μ = 50",
-          variance: "σ² = 225",
-          stdDev: "σ = 15",
-          symbol: "N(50, 15²)"
+          mean: `μ = 50`,
+          variance: `σ² = 225`,
+          stdDev: `σ = 15`,
+          sem: `σ/√n = ${theoreticalSEM}`,
+          symbol: `N(50, 15²)`,
+          semExplanation: `As sample size increases, the standard error decreases proportionally to 1/√n.`
         };
       case "uniform":
+        // For uniform distribution, σ² = (b-a)²/12
+        const a = 10;
+        const b = 90;
+        const uMean = (a + b) / 2;
+        const uVar = Math.pow(b - a, 2) / 12;
+        const uStdDev = Math.sqrt(uVar);
+        const uSEM = (uStdDev / Math.sqrt(sampleSize)).toFixed(2);
+        
         return {
-          mean: "μ = 50",
-          variance: "σ² = 533.33",
-          stdDev: "σ = 23.09",
-          symbol: "U(10, 90)"
+          mean: `μ = ${uMean}`,
+          variance: `σ² = ${uVar.toFixed(2)}`,
+          stdDev: `σ = ${uStdDev.toFixed(2)}`,
+          sem: `σ/√n = ${uSEM}`,
+          symbol: `U(${a}, ${b})`,
+          semExplanation: `The sampling distribution for uniform data also approaches normal as n increases.`
         };
       case "skewed":
+        // For exponential distribution with λ=0.5, μ=1/λ, σ²=1/λ²
+        const lambda = 0.5;
+        const expMean = 1/lambda * 20 + 10; // scaled and shifted
+        const expVar = 1/(lambda*lambda) * 400; // scaled 
+        const expStdDev = Math.sqrt(expVar);
+        const expSEM = (expStdDev / Math.sqrt(sampleSize)).toFixed(2);
+        
         return {
-          mean: "μ ≈ 30",
-          variance: "σ² ≈ 400",
-          stdDev: "σ ≈ 20",
-          symbol: "Exp(λ=0.5) × 20 + 10"
+          mean: `μ ≈ ${expMean.toFixed(2)}`,
+          variance: `σ² ≈ ${expVar.toFixed(2)}`,
+          stdDev: `σ ≈ ${expStdDev.toFixed(2)}`,
+          sem: `σ/√n ≈ ${expSEM}`,
+          symbol: `Exp(λ=0.5) × 20 + 10`,
+          semExplanation: `Even with skewed data, the sampling distribution normalizes as n increases.`
         };
       case "bimodal":
+        // For bimodal (mixture of two normals)
+        const biModalMean = 50; // (30 + 70) / 2
+        const biModalVar = 400; // Calculated from mixture
+        const biModalStdDev = 20;
+        const biModalSEM = (biModalStdDev / Math.sqrt(sampleSize)).toFixed(2);
+        
         return {
-          mean: "μ = 50",
-          variance: "σ² = 400",
-          stdDev: "σ = 20",
-          symbol: "0.5N(30,10²) + 0.5N(70,10²)"
+          mean: `μ = ${biModalMean}`,
+          variance: `σ² = ${biModalVar}`,
+          stdDev: `σ = ${biModalStdDev}`,
+          sem: `σ/√n = ${biModalSEM}`,
+          symbol: `0.5N(30,10²) + 0.5N(70,10²)`,
+          semExplanation: `Even with a bimodal population, the CLT ensures a normal sampling distribution.`
         };
       default:
         return {
           mean: "μ",
           variance: "σ²",
           stdDev: "σ",
-          symbol: ""
+          sem: "σ/√n",
+          symbol: "",
+          semExplanation: ""
         };
     }
   };
@@ -67,21 +110,24 @@ export function StatisticsPanel({ distribution, sampleMeans, sampleSize }: Stati
   return (
     <Card className="w-full">
       <CardContent className="pt-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <h3 className="font-medium flex items-center gap-2">
               <Sigma className="h-5 w-5" /> Population Parameters
             </h3>
             <p className="text-sm text-muted-foreground">Distribution: {theoretical.symbol}</p>
-            <div className="grid grid-cols-3 gap-2 text-sm">
+            <div className="grid grid-cols-2 gap-2 text-sm">
               <div className="p-2 bg-muted rounded-lg">
                 {theoretical.mean}
+              </div>
+              <div className="p-2 bg-muted rounded-lg">
+                {theoretical.stdDev}
               </div>
               <div className="p-2 bg-muted rounded-lg">
                 {theoretical.variance}
               </div>
               <div className="p-2 bg-muted rounded-lg">
-                {theoretical.stdDev}
+                {theoretical.sem}
               </div>
             </div>
           </div>
@@ -91,16 +137,38 @@ export function StatisticsPanel({ distribution, sampleMeans, sampleSize }: Stati
               <Pi className="h-5 w-5" /> Sample Statistics
             </h3>
             <p className="text-sm text-muted-foreground">Based on {sampleMeans.length} samples of size {sampleSize}</p>
-            <div className="grid grid-cols-3 gap-2 text-sm">
+            <div className="grid grid-cols-2 gap-2 text-sm">
               <div className="p-2 bg-muted rounded-lg">
                 x̄ = {stats.mean}
+              </div>
+              <div className="p-2 bg-muted rounded-lg">
+                s = {stats.stdDev}
               </div>
               <div className="p-2 bg-muted rounded-lg">
                 s² = {stats.variance}
               </div>
               <div className="p-2 bg-muted rounded-lg">
-                s = {stats.stdDev}
+                SEM = {stats.sem}
               </div>
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <h3 className="font-medium flex items-center gap-2">
+              <Calculator className="h-5 w-5" /> Central Limit Theorem
+            </h3>
+            <p className="text-sm text-muted-foreground">Statistical Effects</p>
+            <div className="p-2 bg-muted rounded-lg text-sm">
+              <p>Standard Error of the Mean (SEM): <strong>{stats.sem}</strong></p>
+              <p className="text-xs text-muted-foreground mt-1">{theoretical.semExplanation}</p>
+            </div>
+            <div className="p-2 bg-muted rounded-lg text-sm">
+              <p>Expected normalization: {sampleSize < 30 ? "Partial" : "Strong"}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {sampleSize < 30 
+                  ? "Sample size < 30: CLT beginning to take effect" 
+                  : "Sample size ≥ 30: CLT strongly in effect"}
+              </p>
             </div>
           </div>
         </div>

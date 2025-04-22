@@ -1,3 +1,4 @@
+
 // Function to generate random numbers from different distributions
 
 // Normal distribution using Box-Muller transform
@@ -13,7 +14,7 @@ export function generateNormal(mean = 0, stdDev = 1, size = 1): number[] {
   return result;
 }
 
-// Updated uniform distribution with better range handling
+// Improved uniform distribution
 export function generateUniform(min = 0, max = 1, size = 1): number[] {
   const result = [];
   const range = max - min;
@@ -49,7 +50,7 @@ export function generateBimodal(mean1 = -2, mean2 = 2, stdDev = 1, size = 1): nu
   return result;
 }
 
-// Updated generateDistributionData with adjusted parameters
+// Updated generateDistributionData with adjusted parameters and more consistent scaling
 export function generateDistributionData(
   distribution: string,
   size: number
@@ -58,8 +59,9 @@ export function generateDistributionData(
     case "normal":
       return generateNormal(50, 15, size);
     case "uniform":
-      return generateUniform(10, 90, size); // Fixed uniform range
+      return generateUniform(10, 90, size);
     case "skewed":
+      // Transform exponential distribution to make it more readable
       return generateSkewed(0.5, size).map(x => x * 20 + 10);
     case "bimodal":
       return generateBimodal(30, 70, 10, size);
@@ -75,7 +77,20 @@ export function calculateMean(arr: number[]): number {
   return sum / arr.length;
 }
 
-// Function to generate bins for histogram
+// Function to calculate variance of an array of numbers
+export function calculateVariance(arr: number[], mean?: number): number {
+  if (arr.length <= 1) return 0;
+  const m = mean ?? calculateMean(arr);
+  const squaredDifferences = arr.map(val => Math.pow(val - m, 2));
+  return squaredDifferences.reduce((acc, val) => acc + val, 0) / arr.length;
+}
+
+// Function to calculate standard deviation
+export function calculateStdDev(arr: number[], mean?: number): number {
+  return Math.sqrt(calculateVariance(arr, mean));
+}
+
+// Improved function to generate histogram bins with better binning
 export function generateHistogramBins(data: number[], numBins = 20): { x: number, y: number }[] {
   if (data.length === 0) return [];
   
@@ -83,22 +98,37 @@ export function generateHistogramBins(data: number[], numBins = 20): { x: number
   const min = Math.min(...data);
   const max = Math.max(...data);
   
+  // Add a small buffer to min/max to ensure all data points are included
+  const range = max - min;
+  const bufferSize = range * 0.05; // 5% buffer
+  const adjustedMin = min - bufferSize;
+  const adjustedMax = max + bufferSize;
+  
   // Calculate bin width
-  const binWidth = (max - min) / numBins;
+  const binWidth = (adjustedMax - adjustedMin) / numBins;
   
   // Initialize bins
   const bins = Array(numBins).fill(0).map((_, i) => ({
-    x: min + (i + 0.5) * binWidth, // Center of bin
+    x: adjustedMin + (i + 0.5) * binWidth, // Center of bin
     y: 0 // Count, initially 0
   }));
   
   // Count data points in each bin
   data.forEach(value => {
-    const binIndex = Math.min(Math.floor((value - min) / binWidth), numBins - 1);
+    const binIndex = Math.min(
+      Math.floor((value - adjustedMin) / binWidth), 
+      numBins - 1
+    );
     if (binIndex >= 0 && binIndex < bins.length) {
       bins[binIndex].y += 1;
     }
   });
   
-  return bins;
+  // Normalize the bin heights to create a density plot
+  const totalCount = data.length;
+  return bins.map(bin => ({
+    x: bin.x,
+    // Normalize by count and bin width to get probability density
+    y: bin.y / (totalCount * binWidth)
+  }));
 }
