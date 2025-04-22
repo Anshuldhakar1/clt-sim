@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Navbar } from "@/components/Navbar";
 import { ControlPanel } from "@/components/ControlPanel";
 import { ChartContainer } from "@/components/ChartContainer";
@@ -11,12 +11,15 @@ import { OverlappingCurves } from "@/components/OverlappingCurves";
 import { StatisticalEffectPanel } from "@/components/StatisticalEffectPanel";
 import { DistributionTheoryTabs } from "@/components/DistributionTheoryTabs";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { exportToPNG, generateShareableUrl, parseUrlParams } from "@/utils/export-utils";
 
 const Index = () => {
   // State for control parameters
   const [sampleSize, setSampleSize] = useState<number>(30);
   const [numberOfSamples, setNumberOfSamples] = useState<number>(100);
   const [distribution, setDistribution] = useState<string>("normal");
+  const [showNormalCurve, setShowNormalCurve] = useState<boolean>(false);
+  const [activeScenario, setActiveScenario] = useState<string | null>(null);
   
   // State for sampling results
   const [sampleMeans, setSampleMeans] = useState<number[]>([]);
@@ -25,8 +28,23 @@ const Index = () => {
   // For theory tabs (used only for active tab, but all tabs shown at bottom)
   const [theoryTab, setTheoryTab] = useState<string>("normal");
 
+  // Refs for chart exporting
+  const mainContainerRef = useRef<HTMLDivElement>(null);
+  const samplingChartRef = useRef<HTMLDivElement>(null);
+
   // Detect mobile for responsive layout
   const isMobile = useIsMobile();
+
+  // Effect to handle URL parameters
+  useEffect(() => {
+    const params = parseUrlParams();
+    if (Object.keys(params).length > 0) {
+      if (params.sampleSize !== undefined) setSampleSize(params.sampleSize);
+      if (params.numberOfSamples !== undefined) setNumberOfSamples(params.numberOfSamples);
+      if (params.distribution !== undefined) setDistribution(params.distribution);
+      if (params.showNormalCurve !== undefined) setShowNormalCurve(params.showNormalCurve);
+    }
+  }, []);
 
   // Function to generate samples with faster animation
   const generateSamples = useCallback(() => {
@@ -58,8 +76,25 @@ const Index = () => {
     setSamplesGenerated(0);
   };
 
+  // Export chart as PNG
+  const handleExport = () => {
+    if (samplingChartRef.current) {
+      exportToPNG(samplingChartRef, 'clt-sampling-distribution.png');
+    }
+  };
+
+  // Generate shareable URL
+  const handleShare = () => {
+    generateShareableUrl({
+      sampleSize,
+      numberOfSamples,
+      distribution,
+      showNormalCurve
+    });
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background" ref={mainContainerRef}>
       <Navbar />
       <main className="flex-1 container mx-auto p-4 md:p-6 flex flex-col gap-6">
         {/* Controls at the very top */}
@@ -72,6 +107,12 @@ const Index = () => {
           setDistribution={setDistribution}
           onSample={generateSamples}
           onReset={resetSampling}
+          onExport={handleExport}
+          onShare={handleShare}
+          showNormalCurve={showNormalCurve}
+          setShowNormalCurve={setShowNormalCurve}
+          activeScenario={activeScenario}
+          setActiveScenario={setActiveScenario}
         />
 
         {/* Charts section */}
@@ -80,7 +121,13 @@ const Index = () => {
             <PopulationChart distribution={distribution} />
           </ChartContainer>
           <ChartContainer title="Sampling Distribution of the Mean">
-            <SamplingChart sampleMeans={sampleMeans} />
+            <div ref={samplingChartRef} className="w-full h-full">
+              <SamplingChart 
+                sampleMeans={sampleMeans} 
+                showTheoretical={showNormalCurve}
+                colorGroups={true}
+              />
+            </div>
           </ChartContainer>
         </div>
 
@@ -126,4 +173,3 @@ const Index = () => {
 };
 
 export default Index;
-
