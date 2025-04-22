@@ -1,5 +1,5 @@
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { ControlPanel } from "@/components/ControlPanel";
 import { ChartContainer } from "@/components/ChartContainer";
@@ -11,7 +11,6 @@ import { OverlappingCurves } from "@/components/OverlappingCurves";
 import { StatisticalEffectPanel } from "@/components/StatisticalEffectPanel";
 import { DistributionTheoryTabs } from "@/components/DistributionTheoryTabs";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { exportToPNG, parseUrlParams } from "@/utils/export-utils";
 import { generateDistributionData, calculateMean } from "@/utils/distributions";
 
 const Index = () => {
@@ -19,7 +18,6 @@ const Index = () => {
   const [sampleSize, setSampleSize] = useState<number>(30);
   const [numberOfSamples, setNumberOfSamples] = useState<number>(100);
   const [distribution, setDistribution] = useState<string>("normal");
-  const [showNormalCurve, setShowNormalCurve] = useState<boolean>(false);
   const [activeScenario, setActiveScenario] = useState<string | null>(null);
 
   // State for sampling results
@@ -29,23 +27,8 @@ const Index = () => {
   // For theory tabs (used only for active tab, but all tabs shown at bottom)
   const [theoryTab, setTheoryTab] = useState<string>("normal");
 
-  // Refs for chart exporting
-  const mainContainerRef = useRef<HTMLDivElement>(null);
-  const samplingChartRef = useRef<HTMLDivElement>(null);
-
   // Detect mobile for responsive layout
   const isMobile = useIsMobile();
-
-  // Effect to handle URL parameters
-  useEffect(() => {
-    const params = parseUrlParams();
-    if (Object.keys(params).length > 0) {
-      if (params.sampleSize !== undefined) setSampleSize(params.sampleSize);
-      if (params.numberOfSamples !== undefined) setNumberOfSamples(params.numberOfSamples);
-      if (params.distribution !== undefined) setDistribution(params.distribution);
-      if (params.showNormalCurve !== undefined) setShowNormalCurve(params.showNormalCurve);
-    }
-  }, []);
 
   // Function to generate samples with faster animation
   const generateSamples = useCallback(() => {
@@ -77,9 +60,9 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background" ref={mainContainerRef}>
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
-      <main className="flex-1 container mx-auto p-2 md:p-6 flex flex-col gap-5 md:gap-6">
+      <main className="flex-1 container mx-auto p-2 md:p-6 flex flex-col gap-5 md:gap-6 pb-12">
         <ControlPanel
           sampleSize={sampleSize}
           setSampleSize={setSampleSize}
@@ -95,18 +78,18 @@ const Index = () => {
 
         <div className={`grid w-full ${
           isMobile
-            ? "grid-cols-1 gap-2"
+            ? "grid-cols-1 gap-4"
             : "grid-cols-1 md:grid-cols-2 gap-6"
         }`}>
           {/* Population Chart */}
           <ChartContainer title="Population Distribution">
-            <div className={`w-full ${isMobile ? "min-h-[220px] h-[220px]" : "h-[260px]"}`}>
+            <div className={`w-full ${isMobile ? "min-h-[260px] h-[260px]" : "h-[260px]"}`}>
               <PopulationChart distribution={distribution} />
             </div>
           </ChartContainer>
           {/* Sampling Distribution */}
           <ChartContainer title="Sampling Distribution of the Mean">
-            <div ref={samplingChartRef} className={`w-full ${isMobile ? "min-h-[220px] h-[220px]" : "h-[260px]"}`}>
+            <div className={`w-full ${isMobile ? "min-h-[260px] h-[260px]" : "h-[260px]"}`}>
               <SamplingChart
                 sampleMeans={sampleMeans}
                 colorGroups={true}
@@ -141,7 +124,7 @@ const Index = () => {
         </div>
 
         {/* Distribution Theory Tabs */}
-        <div>
+        <div className="mt-4">
           <DistributionTheoryTabs
             distribution={theoryTab}
             onTabChange={setTheoryTab}

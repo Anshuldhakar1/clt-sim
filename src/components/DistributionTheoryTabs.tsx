@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { AreaChart, ChartPie, ScatterChart } from "lucide-react";
@@ -131,7 +132,7 @@ const THEORIES = [
     ],
     formula: {
       main: <span><strong>f(x) = Γ((ν+1)/2) / [√(νπ)·Γ(ν/2)]·[1 + (x-μ)²/(νs²)]<sup>-(ν+1)/2</sup></strong></span>,
-      sampling: <span><strong>X̄ ~ N(μ, s²/n) as n → ∞</strong></span>
+      sampling: <span><strong>X̄ ~ N(μ, 2b²/n) as n → ∞</strong></span>
     }
   }
 ];
@@ -143,29 +144,29 @@ interface DistributionTheoryTabsProps {
 
 export function DistributionTheoryTabs({ distribution, onTabChange }: DistributionTheoryTabsProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 mb-8">
       <div>
-        <h4 className="font-semibold text-base mb-1">Population Theory</h4>
-        <div className="flex flex-wrap gap-2">
+        <h4 className="font-semibold text-base mb-2">Population Theory</h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
           {POPULATION_THEORIES.map((pop) => (
             <div 
               key={pop.key}
-              className="bg-muted border rounded-md p-2 text-[13px] min-h-[70px] max-w-full flex-1 basis-[260px]"
-              style={{ minWidth: 180 }}
+              className="bg-muted border rounded-md p-3 text-[13px] min-h-[80px] flex flex-col"
             >
-              <span className="font-semibold">{pop.title}</span>
-              <span className="text-muted-foreground">{pop.description}</span>
+              <span className="font-semibold mb-1">{pop.title}</span>
+              <span className="text-muted-foreground text-xs">{pop.description}</span>
             </div>
           ))}
         </div>
       </div>
       <Tabs defaultValue={distribution} className="w-full">
-        <TabsList className="flex flex-wrap gap-2 mb-2">
+        <TabsList className="flex flex-wrap h-auto py-1 gap-1">
           {THEORIES.map((theory) => (
             <TabsTrigger 
               key={theory.key}
               value={theory.key}
               onClick={() => onTabChange?.(theory.key)}
+              className="mb-1"
             >
               {theory.title}
             </TabsTrigger>
@@ -174,7 +175,7 @@ export function DistributionTheoryTabs({ distribution, onTabChange }: Distributi
         {THEORIES.map((theory) => (
           <TabsContent key={theory.key} value={theory.key}>
             <Card>
-              <CardContent className="pt-4">
+              <CardContent className="pt-4 pb-6">
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
                     {theory.icon}
