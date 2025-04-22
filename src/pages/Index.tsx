@@ -11,7 +11,7 @@ import { OverlappingCurves } from "@/components/OverlappingCurves";
 import { StatisticalEffectPanel } from "@/components/StatisticalEffectPanel";
 import { DistributionTheoryTabs } from "@/components/DistributionTheoryTabs";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { exportToPNG, generateShareableUrl, parseUrlParams } from "@/utils/export-utils";
+import { exportToPNG, parseUrlParams } from "@/utils/export-utils";
 import { generateDistributionData, calculateMean } from "@/utils/distributions";
 
 const Index = () => {
@@ -83,16 +83,6 @@ const Index = () => {
     }
   };
 
-  // Generate shareable URL
-  const handleShare = () => {
-    generateShareableUrl({
-      sampleSize,
-      numberOfSamples,
-      distribution,
-      showNormalCurve
-    });
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-background" ref={mainContainerRef}>
       <Navbar />
@@ -108,7 +98,6 @@ const Index = () => {
           onSample={generateSamples}
           onReset={resetSampling}
           onExport={handleExport}
-          onShare={handleShare}
           showNormalCurve={showNormalCurve}
           setShowNormalCurve={setShowNormalCurve}
           activeScenario={activeScenario}

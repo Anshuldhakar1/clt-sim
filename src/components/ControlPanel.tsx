@@ -184,7 +184,7 @@ export function ControlPanel({
               <SelectItem value="skewed">Right-Skewed</SelectItem>
               <SelectItem value="bimodal">Bimodal</SelectItem>
               <SelectItem value="laplace">Laplace</SelectItem>
-              <SelectItem value="student-t">Student’s t</SelectItem>
+              <SelectItem value="student-t">Student's t</SelectItem>
             </SelectContent>
           </Select>
         </div>
