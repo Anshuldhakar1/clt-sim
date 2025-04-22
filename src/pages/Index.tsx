@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from "react";
 import { Navbar } from "@/components/Navbar";
 import { ControlPanel } from "@/components/ControlPanel";
@@ -18,13 +17,13 @@ const Index = () => {
   const [sampleMeans, setSampleMeans] = useState<number[]>([]);
   const [samplesGenerated, setSamplesGenerated] = useState<number>(0);
 
-  // Function to generate samples and calculate means
+  // Function to generate samples and calculate means with faster animation
   const generateSamples = useCallback(() => {
     // Reset sampling
     setSampleMeans([]);
     setSamplesGenerated(0);
     
-    // Start generating samples one by one with a delay to show animation
+    // Start generating samples one by one with a faster delay
     let currentSample = 0;
     const interval = setInterval(() => {
       if (currentSample >= numberOfSamples) {
@@ -32,17 +31,17 @@ const Index = () => {
         return;
       }
       
-      // Generate one sample and calculate its mean
-      const sample = generateDistributionData(distribution, sampleSize);
-      const sampleMean = calculateMean(sample);
-      
-      // Update states
-      setSampleMeans(prev => [...prev, sampleMean]);
-      currentSample++;
+      // Generate multiple samples per tick for smoother animation with larger sample sizes
+      const batchSize = Math.max(1, Math.floor(numberOfSamples / 100));
+      for (let i = 0; i < batchSize && currentSample < numberOfSamples; i++) {
+        const sample = generateDistributionData(distribution, sampleSize);
+        const sampleMean = calculateMean(sample);
+        setSampleMeans(prev => [...prev, sampleMean]);
+        currentSample++;
+      }
       setSamplesGenerated(currentSample);
-    }, 50); // 50ms between samples for smooth animation
+    }, 20); // Faster interval for smoother animation
     
-    // Cleanup interval on component unmount or re-run
     return () => clearInterval(interval);
   }, [distribution, numberOfSamples, sampleSize]);
 
@@ -68,7 +67,7 @@ const Index = () => {
           onReset={resetSampling}
         />
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[400px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[300px]">
           <ChartContainer title="Population Distribution">
             <PopulationChart distribution={distribution} />
           </ChartContainer>
