@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { AreaChart, ChartPie, ScatterChart } from "lucide-react";
@@ -67,6 +66,40 @@ const THEORIES = [
       main: "f(x) = 0.5φ((x-30)/10) + 0.5φ((x-70)/10)",
       sampling: "X̄ ~ N(μ, σ²/n) as n → ∞"
     }
+  },
+  {
+    key: "laplace",
+    title: "Laplace Distribution (Double Exponential)",
+    icon: <AreaChart className="h-5 w-5" />,
+    symbol: "X ~ Laplace(μ, b)",
+    description: "The Laplace distribution is peaked at its mean and has heavy tails, often used to model data with more outliers.",
+    properties: [
+      "Mean (μ) = 50",
+      "Scale (b) = 10",
+      "Variance (σ²) = 2b² = 200",
+      "Standard Deviation (σ) = √2b ≈ 14.14"
+    ],
+    formula: {
+      main: "f(x) = (1/(2b))·e^{-|x-μ|/b}",
+      sampling: "X̄ ~ N(μ, 2b²/n) as n → ∞"
+    }
+  },
+  {
+    key: "student-t",
+    title: "Student's t Distribution",
+    icon: <ScatterChart className="h-5 w-5" />,
+    symbol: "X ~ t_ν",
+    description: "The Student's t distribution resembles the normal but with heavier tails, especially with small degrees of freedom. Used when population variance is unknown.",
+    properties: [
+      "Degrees of Freedom (ν) = 5",
+      "Mean (μ) = 50",
+      "Scale (s) = 10",
+      "Variance (ν>2): (ν/(ν-2))·s²",
+    ],
+    formula: {
+      main: "f(x) = Γ((ν+1)/2) / [√(νπ)·Γ(ν/2)]·[1 + (x-μ)²/(νs²)]^(-(ν+1)/2)",
+      sampling: "X̄ ~ N(μ, s²/n) as n → ∞"
+    }
   }
 ];
 
@@ -78,7 +111,7 @@ interface DistributionTheoryTabsProps {
 export function DistributionTheoryTabs({ distribution, onTabChange }: DistributionTheoryTabsProps) {
   return (
     <Tabs defaultValue={distribution} className="w-full">
-      <TabsList className="grid grid-cols-4 mb-2">
+      <TabsList className="grid grid-cols-6 mb-2 overflow-x-auto">
         {THEORIES.map((theory) => (
           <TabsTrigger 
             key={theory.key}
@@ -111,11 +144,9 @@ export function DistributionTheoryTabs({ distribution, onTabChange }: Distributi
                 {theory.formula.main && (
                   <div className="space-y-2">
                     <h4 className="font-medium text-sm">Probability Density Function:</h4>
-                    <div className="text-sm font-mono bg-muted/80 p-3 rounded-lg overflow-x-auto dark:bg-muted/20">
-                      {theory.formula.main}
-                    </div>
+                    <div className="text-base font-mono bg-muted/90 p-3 rounded-lg overflow-x-auto dark:bg-muted/20 border border-muted-foreground/20 my-1 leading-normal break-all">{theory.formula.main}</div>
                     <h4 className="font-medium text-sm pt-2">Sampling Distribution:</h4>
-                    <div className="text-sm font-mono bg-muted/80 p-3 rounded-lg overflow-x-auto dark:bg-muted/20">
+                    <div className="text-base font-mono bg-muted/90 p-3 rounded-lg overflow-x-auto dark:bg-muted/20 border border-muted-foreground/20 my-1 leading-normal break-all">
                       {theory.formula.sampling}
                     </div>
                   </div>

@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Navbar } from "@/components/Navbar";
 import { ControlPanel } from "@/components/ControlPanel";
@@ -97,8 +96,6 @@ const Index = () => {
           onSample={generateSamples}
           onReset={resetSampling}
           onExport={handleExport}
-          showNormalCurve={showNormalCurve}
-          setShowNormalCurve={setShowNormalCurve}
           activeScenario={activeScenario}
           setActiveScenario={setActiveScenario}
         />
@@ -111,14 +108,12 @@ const Index = () => {
             <div ref={samplingChartRef} className="w-full h-full">
               <SamplingChart
                 sampleMeans={sampleMeans}
-                showTheoretical={showNormalCurve}
-                setShowTheoretical={setShowNormalCurve}
                 colorGroups={true}
               />
             </div>
           </ChartContainer>
         </div>
-
+        
         <StatisticalEffectPanel sampleSize={sampleSize} />
 
         <StatisticsPanel
