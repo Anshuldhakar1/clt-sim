@@ -81,16 +81,15 @@ export function SamplingChart({ sampleMeans, showTheoretical, setShowTheoretical
     }
   }, [sampleMeans, colorGroups]);
 
-  // Toggle directly above chart
+  // Move toggle directly above chart
   return (
     <div className="w-full h-full flex flex-col gap-2">
       {typeof setShowTheoretical === "function" && (
-        <div className="flex items-center gap-2 justify-end mb-2 pl-2">
+        <div className="flex items-center gap-2 justify-end mb-1">
           <Toggle
             pressed={showTheoretical}
             onPressedChange={setShowTheoretical}
-            className="mr-2"
-            aria-label="Toggle Normal Curve"
+            className="data-[state=on]:bg-primary"
             size="sm"
           />
           <Label className="mb-0 text-sm select-none">Show Theoretical Normal Curve</Label>

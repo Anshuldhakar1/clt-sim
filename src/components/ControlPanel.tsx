@@ -2,7 +2,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
-import { Toggle } from "@/components/ui/toggle";
 import { ScenarioPresets } from "./ScenarioPresets";
 import { ControlMainControls } from "./ControlMainControls";
 
@@ -32,7 +31,7 @@ export function ControlPanel({
   onSample,
   onReset,
   onExport,
-  showNormalCurve, // this will now be toggled near chart
+  showNormalCurve, // This is now controlled from the SamplingChart directly
   setShowNormalCurve,
   activeScenario,
   setActiveScenario,
@@ -81,9 +80,9 @@ export function ControlPanel({
             onClick={onExport}
             variant="outline"
             size="sm"
-            className="h-9"
+            className="h-8"
           >
-            <Download className="mr-1" />
+            <Download className="mr-1 h-4 w-4" />
             Export PNG
           </Button>
         </div>

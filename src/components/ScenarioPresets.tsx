@@ -43,12 +43,11 @@ export function ScenarioPresets({ activeScenario, setActiveScenario, setSampleSi
             key={key}
             onClick={() => handlePresetChange(key as keyof typeof PRESETS)}
             variant={activeScenario === key ? "default" : "outline"}
-            className="h-auto text-xs sm:text-[13px] px-2 py-2 flex flex-col items-start whitespace-normal min-h-[56px] leading-snug break-words"
-            style={{ overflowWrap: "anywhere", wordBreak: "break-word", whiteSpace: "normal", minHeight: 56 }}
+            className="h-auto px-2 py-2 text-xs sm:text-xs flex flex-col items-start justify-start w-full whitespace-normal min-h-[56px] leading-snug text-left"
             size="sm"
           >
-            <span className="font-semibold block" style={{ lineHeight: 1.12 }}>{preset.description}</span>
-            <span className="text-xs opacity-80 mt-0.5 block">n={preset.sampleSize}, {preset.distribution}</span>
+            <span className="font-semibold block">{preset.description}</span>
+            <span className="text-xs opacity-80 mt-1 block">n={preset.sampleSize}, {preset.distribution}</span>
           </Button>
         ))}
       </div>
