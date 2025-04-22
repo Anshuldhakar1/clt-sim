@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from "react";
 import {
   Bar,
@@ -60,10 +59,9 @@ export function SamplingChart({ sampleMeans, colorGroups = false }: SamplingChar
     }
   }, [sampleMeans, colorGroups]);
 
-  // Removed theoretical curve toggle logic as requested
   return (
     <div className="w-full h-full flex flex-col gap-2">
-      <div className="w-full h-full flex-1">
+      <div className="w-full h-full flex-1 min-h-[150px] sm:min-h-[180px] md:min-h-[200px]">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
             <XAxis

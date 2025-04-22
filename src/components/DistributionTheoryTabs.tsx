@@ -1,9 +1,7 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { AreaChart, ChartPie, ScatterChart } from "lucide-react";
 
-// Added population distribution summary theories
 const POPULATION_THEORIES = [
   {
     key: "normal",
@@ -129,7 +127,7 @@ const THEORIES = [
       "Degrees of Freedom (ν) = 5",
       "Mean (μ) = 50",
       "Scale (s) = 10",
-      "Variance (ν&gt;2): (ν/(ν-2))·s²",
+      "Variance (ν>2): (ν/(ν-2))·s²",
     ],
     formula: {
       main: <span><strong>f(x) = Γ((ν+1)/2) / [√(νπ)·Γ(ν/2)]·[1 + (x-μ)²/(νs²)]<sup>-(ν+1)/2</sup></strong></span>,
@@ -148,11 +146,12 @@ export function DistributionTheoryTabs({ distribution, onTabChange }: Distributi
     <div className="space-y-4">
       <div>
         <h4 className="font-semibold text-base mb-1">Population Theory</h4>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+        <div className="flex flex-wrap gap-2">
           {POPULATION_THEORIES.map((pop) => (
             <div 
               key={pop.key}
-              className="bg-muted border rounded-md p-2 text-[13px] min-h-[70px] flex flex-col justify-center"
+              className="bg-muted border rounded-md p-2 text-[13px] min-h-[70px] max-w-full flex-1 basis-[260px]"
+              style={{ minWidth: 180 }}
             >
               <span className="font-semibold">{pop.title}</span>
               <span className="text-muted-foreground">{pop.description}</span>

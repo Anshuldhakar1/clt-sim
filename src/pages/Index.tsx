@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Navbar } from "@/components/Navbar";
 import { ControlPanel } from "@/components/ControlPanel";
@@ -78,7 +79,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background" ref={mainContainerRef}>
       <Navbar />
-      <main className="flex-1 container mx-auto p-4 md:p-6 flex flex-col gap-6">
+      <main className="flex-1 container mx-auto p-2 md:p-6 flex flex-col gap-5 md:gap-6">
         <ControlPanel
           sampleSize={sampleSize}
           setSampleSize={setSampleSize}
@@ -92,14 +93,20 @@ const Index = () => {
           setActiveScenario={setActiveScenario}
         />
 
-        <div className={`grid ${isMobile ? 'grid-cols-1 gap-4' : 'grid-cols-1 md:grid-cols-2 gap-6'} ${isMobile ? 'h-[360px]' : 'h-[250px]'}`}>
+        <div className={`grid w-full ${
+          isMobile
+            ? "grid-cols-1 gap-2"
+            : "grid-cols-1 md:grid-cols-2 gap-6"
+        }`}>
+          {/* Population Chart */}
           <ChartContainer title="Population Distribution">
-            <div className={`w-full h-full ${isMobile ? "min-h-[160px] h-[170px]" : "h-full"}`}>
+            <div className={`w-full ${isMobile ? "min-h-[220px] h-[220px]" : "h-[260px]"}`}>
               <PopulationChart distribution={distribution} />
             </div>
           </ChartContainer>
+          {/* Sampling Distribution */}
           <ChartContainer title="Sampling Distribution of the Mean">
-            <div ref={samplingChartRef} className={`w-full h-full ${isMobile ? "min-h-[160px] h-[170px]" : "h-full"}`}>
+            <div ref={samplingChartRef} className={`w-full ${isMobile ? "min-h-[220px] h-[220px]" : "h-[260px]"}`}>
               <SamplingChart
                 sampleMeans={sampleMeans}
                 colorGroups={true}
@@ -133,6 +140,7 @@ const Index = () => {
           />
         </div>
 
+        {/* Distribution Theory Tabs */}
         <div>
           <DistributionTheoryTabs
             distribution={theoryTab}
