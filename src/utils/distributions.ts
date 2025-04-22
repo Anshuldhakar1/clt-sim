@@ -90,6 +90,9 @@ export function calculateStdDev(arr: number[], mean?: number): number {
   return Math.sqrt(calculateVariance(arr, mean));
 }
 
+// Export calculate standard deviation as an alias to calculateStdDev for compatibility
+export const calculateStandardDeviation = calculateStdDev;
+
 // Improved function to generate histogram bins with better binning
 export function generateHistogramBins(data: number[], numBins = 20): { x: number, y: number }[] {
   if (data.length === 0) return [];

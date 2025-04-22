@@ -12,6 +12,7 @@ import { StatisticalEffectPanel } from "@/components/StatisticalEffectPanel";
 import { DistributionTheoryTabs } from "@/components/DistributionTheoryTabs";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { exportToPNG, generateShareableUrl, parseUrlParams } from "@/utils/export-utils";
+import { generateDistributionData, calculateMean } from "@/utils/distributions";
 
 const Index = () => {
   // State for control parameters
@@ -59,7 +60,6 @@ const Index = () => {
       }
       const batchSize = Math.max(1, Math.floor(numberOfSamples / 50));
       for (let i = 0; i < batchSize && currentSample < numberOfSamples; i++) {
-        const { generateDistributionData, calculateMean } = require("@/utils/distributions");
         const sample = generateDistributionData(distribution, sampleSize);
         const sampleMean = calculateMean(sample);
         setSampleMeans((prev: number[]) => [...prev, sampleMean]);
