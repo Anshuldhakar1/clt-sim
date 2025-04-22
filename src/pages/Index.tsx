@@ -21,11 +21,11 @@ const Index = () => {
   const [distribution, setDistribution] = useState<string>("normal");
   const [showNormalCurve, setShowNormalCurve] = useState<boolean>(false);
   const [activeScenario, setActiveScenario] = useState<string | null>(null);
-  
+
   // State for sampling results
   const [sampleMeans, setSampleMeans] = useState<number[]>([]);
   const [samplesGenerated, setSamplesGenerated] = useState<number>(0);
-  
+
   // For theory tabs (used only for active tab, but all tabs shown at bottom)
   const [theoryTab, setTheoryTab] = useState<string>("normal");
 
@@ -87,7 +87,6 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-background" ref={mainContainerRef}>
       <Navbar />
       <main className="flex-1 container mx-auto p-4 md:p-6 flex flex-col gap-6">
-        {/* Controls at the very top */}
         <ControlPanel
           sampleSize={sampleSize}
           setSampleSize={setSampleSize}
@@ -104,44 +103,40 @@ const Index = () => {
           setActiveScenario={setActiveScenario}
         />
 
-        {/* Charts section */}
         <div className={`grid ${isMobile ? 'grid-cols-1 gap-4' : 'grid-cols-1 md:grid-cols-2 gap-6'} h-[250px]`}>
           <ChartContainer title="Population Distribution">
             <PopulationChart distribution={distribution} />
           </ChartContainer>
           <ChartContainer title="Sampling Distribution of the Mean">
             <div ref={samplingChartRef} className="w-full h-full">
-              <SamplingChart 
-                sampleMeans={sampleMeans} 
+              <SamplingChart
+                sampleMeans={sampleMeans}
                 showTheoretical={showNormalCurve}
+                setShowTheoretical={setShowNormalCurve}
                 colorGroups={true}
               />
             </div>
           </ChartContainer>
         </div>
 
-        {/* Statistical Effects placed right below the graphs */}
         <StatisticalEffectPanel sampleSize={sampleSize} />
 
-        {/* Statistics panels (Population Parameters & Sample Statistics) */}
-        <StatisticsPanel 
+        <StatisticsPanel
           distribution={distribution}
           sampleMeans={sampleMeans}
           sampleSize={sampleSize}
         />
 
-        {/* Distribution Comparison */}
         <ChartContainer title="Distribution Comparison">
-          <OverlappingCurves 
-            sampleMeans={sampleMeans} 
-            distribution={distribution} 
-            sampleSize={sampleSize} 
+          <OverlappingCurves
+            sampleMeans={sampleMeans}
+            distribution={distribution}
+            sampleSize={sampleSize}
           />
         </ChartContainer>
 
-        {/* Explanation Area */}
         <div className="grid grid-cols-1">
-          <ExplanationArea 
+          <ExplanationArea
             distribution={distribution}
             sampleSize={sampleSize}
             numberOfSamples={numberOfSamples}
@@ -149,7 +144,6 @@ const Index = () => {
           />
         </div>
 
-        {/* Distribution Theories Tabs at the bottom, always visible */}
         <div>
           <DistributionTheoryTabs
             distribution={theoryTab}

@@ -2,6 +2,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { AreaChart, ChartPie, ScatterChart } from "lucide-react";
+import { Formula } from "./Formula";
 
 interface DistributionTheoryProps {
   distribution: string;
@@ -22,8 +23,8 @@ export function DistributionTheory({ distribution }: DistributionTheoryProps) {
             "Variance (σ²): 225"
           ],
           formula: {
-            main: "f(x) = (1/σ√2π) × e^(-((x-μ)²/2σ²))",
-            sampling: "X̄ ~ N(μ, σ²/n)"
+            main: `f(x) = (1/(σ√2π)) · e^{-((x-μ)^2)/(2σ^2)}`,
+            sampling: `X̄ ~ N(μ, σ²/n)`
           }
         };
       case "uniform":
@@ -38,8 +39,8 @@ export function DistributionTheory({ distribution }: DistributionTheoryProps) {
             "Standard Deviation (σ) = (b - a)/√12 ≈ 23.1"
           ],
           formula: {
-            main: "f(x) = 1/(b-a) for x ∈ [a,b]",
-            sampling: "X̄ ~ N(μ, σ²/n) as n → ∞"
+            main: `f(x) = 1/(b-a), for x ∈ [a, b]`,
+            sampling: `X̄ ~ N(μ, σ²/n) as n → ∞`
           }
         };
       case "skewed":
@@ -47,15 +48,15 @@ export function DistributionTheory({ distribution }: DistributionTheoryProps) {
           title: "Right-Skewed Distribution (Exponential)",
           icon: <ScatterChart className="h-5 w-5" />,
           symbol: "X ~ Exp(λ)",
-          description: "The exponential distribution models the time between events, with a longer tail to the right.",
+          description: "The exponential distribution models the time between events, with a long tail to the right.",
           properties: [
             "Rate Parameter (λ) = 0.5",
             "Mean (μ) = 1/λ × 20 + 10",
             "Variance (σ²) = 1/λ² × 400"
           ],
           formula: {
-            main: "f(x) = λe^(-λx) for x ≥ 0",
-            sampling: "X̄ ~ N(μ, σ²/n) as n → ∞"
+            main: `f(x) = λ · e^{-λx}, for x ≥ 0`,
+            sampling: `X̄ ~ N(μ, σ²/n) as n → ∞`
           }
         };
       case "bimodal":
@@ -70,8 +71,42 @@ export function DistributionTheory({ distribution }: DistributionTheoryProps) {
             "Standard Deviation (σ) = 20"
           ],
           formula: {
-            main: "f(x) = 0.5φ((x-30)/10) + 0.5φ((x-70)/10)",
-            sampling: "X̄ ~ N(μ, σ²/n) as n → ∞"
+            main: `f(x) = 0.5ϕ((x-30)/10) + 0.5ϕ((x-70)/10)`,
+            sampling: `X̄ ~ N(μ, σ²/n) as n → ∞`
+          }
+        };
+      case "laplace":
+        return {
+          title: "Laplace Distribution (Double Exponential)",
+          icon: <AreaChart className="h-5 w-5" />,
+          symbol: "X ~ Laplace(μ, b)",
+          description: "The Laplace distribution is peaked at its mean and has heavy tails, often used to model data with more outliers.",
+          properties: [
+            "Mean (μ) = 50",
+            "Scale (b) = 10",
+            "Variance (σ²) = 2b² = 200",
+            "Standard Deviation (σ) = √2b ≈ 14.14"
+          ],
+          formula: {
+            main: `f(x) = (1/(2b)) · e^{-|x-μ|/b}`,
+            sampling: `X̄ ~ N(μ, 2b^2/n) as n → ∞`
+          }
+        };
+      case "student-t":
+        return {
+          title: "Student's t Distribution",
+          icon: <ScatterChart className="h-5 w-5" />,
+          symbol: `X ~ t_ν`,
+          description: "The Student's t distribution resembles the normal but with heavier tails, especially with small degrees of freedom. Used when population variance is unknown.",
+          properties: [
+            "Degrees of Freedom (ν) = 5",
+            "Mean (μ) = 50 (here, centered)",
+            "Scale (s) = 10",
+            "Variance (ν>2): (ν/(ν-2))·s²",
+          ],
+          formula: {
+            main: `f(x) = Γ((ν+1)/2) / [√(νπ) · Γ(ν/2)] · [1 + (x-μ)²/(νs²)]^{-(ν+1)/2}`,
+            sampling: `X̄ ~ N(μ, s²/n) as n → ∞`
           }
         };
       default:
@@ -97,9 +132,9 @@ export function DistributionTheory({ distribution }: DistributionTheoryProps) {
             <h3 className="font-medium text-lg">{theory.title}</h3>
             <code className="text-sm font-mono bg-muted px-2 py-0.5 rounded-lg">{theory.symbol}</code>
           </div>
-          
+
           <p className="text-sm text-muted-foreground">{theory.description}</p>
-          
+
           {theory.properties.length > 0 && (
             <div className="space-y-2">
               <h4 className="font-medium text-sm">Parameters & Statistics:</h4>
@@ -110,17 +145,21 @@ export function DistributionTheory({ distribution }: DistributionTheoryProps) {
               </ul>
             </div>
           )}
-          
-          {theory.formula.main && (
+
+          {(theory.formula.main || theory.formula.sampling) && (
             <div className="space-y-2">
-              <h4 className="font-medium text-sm">Probability Density Function:</h4>
-              <div className="text-sm font-mono bg-muted/80 p-3 rounded-lg overflow-x-auto dark:bg-muted/20">
-                {theory.formula.main}
-              </div>
-              <h4 className="font-medium text-sm pt-2">Sampling Distribution:</h4>
-              <div className="text-sm font-mono bg-muted/80 p-3 rounded-lg overflow-x-auto dark:bg-muted/20">
-                {theory.formula.sampling}
-              </div>
+              {theory.formula.main && (
+                <>
+                  <h4 className="font-medium text-sm">Probability Density Function:</h4>
+                  <Formula>{theory.formula.main}</Formula>
+                </>
+              )}
+              {theory.formula.sampling && (
+                <>
+                  <h4 className="font-medium text-sm pt-2">Sampling Distribution:</h4>
+                  <Formula>{theory.formula.sampling}</Formula>
+                </>
+              )}
             </div>
           )}
         </div>
