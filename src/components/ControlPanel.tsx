@@ -1,4 +1,3 @@
-
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { 
@@ -12,11 +11,36 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 const PRESETS = {
-  basic: { sampleSize: 30, numberOfSamples: 300, distribution: "normal" },
-  detailed: { sampleSize: 50, numberOfSamples: 500, distribution: "normal" },
-  extensive: { sampleSize: 100, numberOfSamples: 1000, distribution: "normal" },
-  skewedAnalysis: { sampleSize: 40, numberOfSamples: 400, distribution: "skewed" },
-  bimodalStudy: { sampleSize: 60, numberOfSamples: 600, distribution: "bimodal" },
+  smallSamples: { 
+    sampleSize: 5, 
+    numberOfSamples: 1000, 
+    distribution: "normal",
+    description: "Small samples to show high variability"
+  },
+  basicNormal: { 
+    sampleSize: 30, 
+    numberOfSamples: 500, 
+    distribution: "normal",
+    description: "Basic demonstration of CLT with normal distribution"
+  },
+  largeUniform: { 
+    sampleSize: 50, 
+    numberOfSamples: 300, 
+    distribution: "uniform",
+    description: "Large samples from uniform to show CLT in action"
+  },
+  extremeSkewed: { 
+    sampleSize: 40, 
+    numberOfSamples: 800, 
+    distribution: "skewed",
+    description: "Skewed distribution to demonstrate CLT's power"
+  },
+  complexBimodal: { 
+    sampleSize: 100, 
+    numberOfSamples: 400, 
+    distribution: "bimodal",
+    description: "Large samples from bimodal to show normality"
+  }
 };
 
 interface ControlPanelProps {
@@ -51,17 +75,17 @@ export function ControlPanel({
     <Card className="p-4 space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="space-y-3">
-          <Label htmlFor="preset">Preset Configuration</Label>
+          <Label htmlFor="preset">Learning Presets</Label>
           <Select onValueChange={handlePresetChange}>
             <SelectTrigger>
-              <SelectValue placeholder="Select a preset" />
+              <SelectValue placeholder="Select a learning scenario" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="basic">Basic (300 samples)</SelectItem>
-              <SelectItem value="detailed">Detailed (500 samples)</SelectItem>
-              <SelectItem value="extensive">Extensive (1000 samples)</SelectItem>
-              <SelectItem value="skewedAnalysis">Skewed Analysis</SelectItem>
-              <SelectItem value="bimodalStudy">Bimodal Study</SelectItem>
+              <SelectItem value="smallSamples">Small Samples (n=5)</SelectItem>
+              <SelectItem value="basicNormal">Basic Normal (n=30)</SelectItem>
+              <SelectItem value="largeUniform">Large Uniform (n=50)</SelectItem>
+              <SelectItem value="extremeSkewed">Extreme Skewed (n=40)</SelectItem>
+              <SelectItem value="complexBimodal">Complex Bimodal (n=100)</SelectItem>
             </SelectContent>
           </Select>
         </div>

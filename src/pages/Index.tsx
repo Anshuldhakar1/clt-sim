@@ -5,6 +5,7 @@ import { ChartContainer } from "@/components/ChartContainer";
 import { PopulationChart } from "@/components/PopulationChart";
 import { SamplingChart } from "@/components/SamplingChart";
 import { ExplanationArea } from "@/components/ExplanationArea";
+import { StatisticsPanel } from "@/components/StatisticsPanel";
 import { generateDistributionData, calculateMean } from "@/utils/distributions";
 
 const Index = () => {
@@ -17,13 +18,13 @@ const Index = () => {
   const [sampleMeans, setSampleMeans] = useState<number[]>([]);
   const [samplesGenerated, setSamplesGenerated] = useState<number>(0);
 
-  // Function to generate samples and calculate means with faster animation
+  // Function to generate samples with faster animation
   const generateSamples = useCallback(() => {
     // Reset sampling
     setSampleMeans([]);
     setSamplesGenerated(0);
     
-    // Start generating samples one by one with a faster delay
+    // Start generating samples with improved animation timing
     let currentSample = 0;
     const interval = setInterval(() => {
       if (currentSample >= numberOfSamples) {
@@ -31,8 +32,8 @@ const Index = () => {
         return;
       }
       
-      // Generate multiple samples per tick for smoother animation with larger sample sizes
-      const batchSize = Math.max(1, Math.floor(numberOfSamples / 100));
+      // Generate multiple samples per tick for smoother animation
+      const batchSize = Math.max(1, Math.floor(numberOfSamples / 50));
       for (let i = 0; i < batchSize && currentSample < numberOfSamples; i++) {
         const sample = generateDistributionData(distribution, sampleSize);
         const sampleMean = calculateMean(sample);
@@ -40,7 +41,7 @@ const Index = () => {
         currentSample++;
       }
       setSamplesGenerated(currentSample);
-    }, 20); // Faster interval for smoother animation
+    }, 40); // Slightly slower for better visualization
     
     return () => clearInterval(interval);
   }, [distribution, numberOfSamples, sampleSize]);
@@ -67,7 +68,7 @@ const Index = () => {
           onReset={resetSampling}
         />
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[300px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[250px]">
           <ChartContainer title="Population Distribution">
             <PopulationChart distribution={distribution} />
           </ChartContainer>
@@ -76,6 +77,12 @@ const Index = () => {
             <SamplingChart sampleMeans={sampleMeans} />
           </ChartContainer>
         </div>
+
+        <StatisticsPanel 
+          distribution={distribution}
+          sampleMeans={sampleMeans}
+          sampleSize={sampleSize}
+        />
         
         <ExplanationArea 
           distribution={distribution}

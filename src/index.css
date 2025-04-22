@@ -13,32 +13,33 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    /* Purple theme */
-    --primary: 255 70% 60%;
+    /* Softer purple theme for light mode */
+    --primary: 250 47% 55%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 260 40% 96.1%;
+    --secondary: 220 16% 96%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 260 40% 96.1%;
+    --muted: 220 16% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 260 40% 96.1%;
+    --accent: 220 16% 96%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
-    /* Chart colors */
-    --chart-primary: 255 70% 60%;
-    --chart-secondary: 220 70% 60%;
-    --chart-accent: 280 70% 60%;
-    --chart-distribution: 255 70% 80%;
-    --chart-samples: 220 70% 80%;
+    /* Chart colors for light mode */
+    --chart-primary: 250 47% 55%;
+    --chart-secondary: 250 47% 65%;
+    --chart-accent: 250 47% 45%;
+    --chart-distribution: 250 47% 85%;
+    --chart-samples: 220 70% 75%;
 
+    /* Other colors */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 255 70% 60%;
+    --ring: 250 47% 55%;
 
     --radius: 0.75rem;
 
@@ -53,41 +54,42 @@
   }
 
   .dark {
-    --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
 
-    --card: 224 71% 4%;
-    --card-foreground: 213 31% 91%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 224 71% 4%;
-    --popover-foreground: 213 31% 91%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
 
-    /* Purple theme dark mode */
-    --primary: 255 70% 60%;
-    --primary-foreground: 210 40% 98%;
+    /* Vibrant purple theme for dark mode */
+    --primary: 250 47% 65%;
+    --primary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 260 20% 14%;
+    --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 260 20% 14%;
-    --muted-foreground: 215 20% 65.1%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 260 15% 20%;
+    --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
 
-    /* Chart colors in dark mode */
-    --chart-primary: 255 70% 60%;
-    --chart-secondary: 220 70% 60%;
-    --chart-accent: 280 70% 60%;
-    --chart-distribution: 255 70% 50%;
-    --chart-samples: 220 70% 50%;
+    /* Chart colors for dark mode */
+    --chart-primary: 250 47% 65%;
+    --chart-secondary: 250 47% 75%;
+    --chart-accent: 250 47% 55%;
+    --chart-distribution: 250 47% 45%;
+    --chart-samples: 220 70% 55%;
 
+    /* Other colors */
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 260 15% 20%;
-    --input: 260 15% 20%;
-    --ring: 255 70% 60%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 250 47% 65%;
     
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;

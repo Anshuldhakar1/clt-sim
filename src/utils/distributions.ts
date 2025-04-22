@@ -1,4 +1,3 @@
-
 // Function to generate random numbers from different distributions
 
 // Normal distribution using Box-Muller transform
@@ -14,11 +13,12 @@ export function generateNormal(mean = 0, stdDev = 1, size = 1): number[] {
   return result;
 }
 
-// Uniform distribution
+// Updated uniform distribution with better range handling
 export function generateUniform(min = 0, max = 1, size = 1): number[] {
   const result = [];
+  const range = max - min;
   for (let i = 0; i < size; i++) {
-    result.push(min + Math.random() * (max - min));
+    result.push(min + Math.random() * range);
   }
   return result;
 }
@@ -49,7 +49,7 @@ export function generateBimodal(mean1 = -2, mean2 = 2, stdDev = 1, size = 1): nu
   return result;
 }
 
-// Function to generate data based on selected distribution
+// Updated generateDistributionData with adjusted parameters
 export function generateDistributionData(
   distribution: string,
   size: number
@@ -58,9 +58,8 @@ export function generateDistributionData(
     case "normal":
       return generateNormal(50, 15, size);
     case "uniform":
-      return generateUniform(10, 90, size);
+      return generateUniform(10, 90, size); // Fixed uniform range
     case "skewed":
-      // Scale and shift to make it comparable with other distributions
       return generateSkewed(0.5, size).map(x => x * 20 + 10);
     case "bimodal":
       return generateBimodal(30, 70, 10, size);
