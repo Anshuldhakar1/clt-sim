@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  base: "./", // Setting base to relative path for GitHub Pages deployment
   plugins: [
     react(),
     mode === 'development' &&
@@ -19,4 +20,18 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    outDir: "dist",
+    assetsDir: "assets",
+    sourcemap: false,
+    emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          charts: ['recharts']
+        }
+      }
+    }
+  }
 }));

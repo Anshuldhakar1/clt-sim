@@ -143,7 +143,7 @@ interface DistributionTheoryTabsProps {
 
 export function DistributionTheoryTabs({ distribution, onTabChange }: DistributionTheoryTabsProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full overflow-hidden">
       <div>
         <h4 className="font-semibold text-base mb-1">Population Theory</h4>
         <div className="flex flex-wrap gap-2">
@@ -173,8 +173,8 @@ export function DistributionTheoryTabs({ distribution, onTabChange }: Distributi
         </TabsList>
         {THEORIES.map((theory) => (
           <TabsContent key={theory.key} value={theory.key}>
-            <Card>
-              <CardContent className="pt-4">
+            <Card className="overflow-hidden">
+              <CardContent className="pt-4 overflow-x-auto">
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
                     {theory.icon}
@@ -193,11 +193,11 @@ export function DistributionTheoryTabs({ distribution, onTabChange }: Distributi
                   {theory.formula.main && (
                     <div className="space-y-2">
                       <h4 className="font-medium text-sm">Probability Density Function:</h4>
-                      <div className="text-base font-mono bg-muted/90 p-3 rounded-lg overflow-x-auto dark:bg-muted/20 border border-muted-foreground/20 my-1 leading-normal break-all font-bold">
+                      <div className="text-base font-mono bg-muted/90 p-3 rounded-lg overflow-x-auto dark:bg-muted/20 border border-muted-foreground/20 my-1 leading-normal break-all font-bold max-w-full">
                         {theory.formula.main}
                       </div>
                       <h4 className="font-medium text-sm pt-2">Sampling Distribution:</h4>
-                      <div className="text-base font-mono bg-muted/90 p-3 rounded-lg overflow-x-auto dark:bg-muted/20 border border-muted-foreground/20 my-1 leading-normal break-all font-bold">
+                      <div className="text-base font-mono bg-muted/90 p-3 rounded-lg overflow-x-auto dark:bg-muted/20 border border-muted-foreground/20 my-1 leading-normal break-all font-bold max-w-full">
                         {theory.formula.sampling}
                       </div>
                     </div>

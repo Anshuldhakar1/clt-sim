@@ -77,9 +77,9 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background" ref={mainContainerRef}>
+    <div className="min-h-screen flex flex-col bg-background overflow-x-hidden" ref={mainContainerRef}>
       <Navbar />
-      <main className="flex-1 container mx-auto p-2 md:p-6 flex flex-col gap-5 md:gap-6">
+      <main className="flex-1 container mx-auto p-2 md:p-6 pb-16 flex flex-col gap-5 md:gap-6">
         <ControlPanel
           sampleSize={sampleSize}
           setSampleSize={setSampleSize}
@@ -141,7 +141,7 @@ const Index = () => {
         </div>
 
         {/* Distribution Theory Tabs */}
-        <div>
+        <div className="mb-16 md:mb-24">
           <DistributionTheoryTabs
             distribution={theoryTab}
             onTabChange={setTheoryTab}
