@@ -10,40 +10,58 @@ import {
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, Share } from "lucide-react";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Download } from "lucide-react";
+import { Toggle } from "@/components/ui/toggle";
 
 const PRESETS = {
   smallSamples: { 
     sampleSize: 5, 
     numberOfSamples: 1000, 
     distribution: "normal",
-    description: "Small samples to show high variability"
+    description: "Small samples: more variability"
   },
   basicNormal: { 
     sampleSize: 30, 
     numberOfSamples: 500, 
     distribution: "normal",
-    description: "Basic demonstration of CLT with normal distribution"
+    description: "Classic Normal: CLT at work"
   },
   largeUniform: { 
     sampleSize: 50, 
     numberOfSamples: 300, 
     distribution: "uniform",
-    description: "Large samples from uniform to show CLT in action"
+    description: "Large samples: Uniform source"
   },
   extremeSkewed: { 
     sampleSize: 40, 
     numberOfSamples: 800, 
     distribution: "skewed",
-    description: "Skewed distribution to demonstrate CLT's power"
+    description: "Right-skewed: watch CLT normality appear"
   },
   complexBimodal: { 
     sampleSize: 100, 
     numberOfSamples: 400, 
     distribution: "bimodal",
-    description: "Large samples from bimodal to show normality"
-  }
+    description: "Bimodal mix: normality emerges"
+  },
+  laplaceFocus: {
+    sampleSize: 35,
+    numberOfSamples: 800,
+    distribution: "laplace",
+    description: "Laplace: pointed at mean, heavy tails"
+  },
+  studentTn: {
+    sampleSize: 15,
+    numberOfSamples: 1000,
+    distribution: "student-t",
+    description: "Student's t: fat tails vs normal"
+  },
+  manySamplesSmall: {
+    sampleSize: 10,
+    numberOfSamples: 1000,
+    distribution: "uniform",
+    description: "Small n, many samples: see spread"
+  },
 };
 
 interface ControlPanelProps {
@@ -56,7 +74,6 @@ interface ControlPanelProps {
   onSample: () => void;
   onReset: () => void;
   onExport: () => void;
-  onShare: () => void;
   showNormalCurve: boolean;
   setShowNormalCurve: (value: boolean) => void;
   activeScenario: string | null;
@@ -73,7 +90,6 @@ export function ControlPanel({
   onSample,
   onReset,
   onExport,
-  onShare,
   showNormalCurve,
   setShowNormalCurve,
   activeScenario,
@@ -92,16 +108,22 @@ export function ControlPanel({
       {/* "What If?" Scenario Buttons - More prominent and touch-friendly */}
       <div>
         <Label className="mb-2 block">What If? Scenarios</Label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
           {Object.entries(PRESETS).map(([key, preset]) => (
             <Button 
               key={key}
               onClick={() => handlePresetChange(key as keyof typeof PRESETS)}
               variant={activeScenario === key ? "default" : "outline"}
-              className="h-auto py-2 text-xs sm:text-sm flex flex-col items-start"
+              className="h-auto p-2 text-xs sm:text-sm flex flex-col items-start whitespace-normal min-h-[60px]"
+              style={{
+                overflowWrap: "anywhere",
+                wordBreak: "break-word",
+                whiteSpace: "normal",
+                minHeight: 60,
+              }}
             >
-              <span className="font-semibold">{preset.description.split(' to ')[0]}</span>
-              <span className="text-xs opacity-80 mt-1">n={preset.sampleSize}, {preset.distribution}</span>
+              <span className="font-semibold block" style={{ lineHeight: 1.15 }}>{preset.description}</span>
+              <span className="text-xs opacity-80 mt-1 block">n={preset.sampleSize}, {preset.distribution}</span>
             </Button>
           ))}
         </div>
@@ -122,13 +144,13 @@ export function ControlPanel({
               setSampleSize(value);
               setActiveScenario(null); // Reset active scenario when user manually changes value
             }}
-            className="touch-none" // Improve touch experience
+            className="touch-none"
           />
         </div>
 
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <Label htmlFor="number-of-samples">Number of Samples: {numberOfSamples}</Label>
+            <Label htmlFor="number-of-samples"># of Samples: {numberOfSamples}</Label>
           </div>
           <Slider 
             id="number-of-samples"
@@ -140,7 +162,7 @@ export function ControlPanel({
               setNumberOfSamples(value);
               setActiveScenario(null); // Reset active scenario when user manually changes value
             }}
-            className="touch-none" // Improve touch experience
+            className="touch-none"
           />
         </div>
 
@@ -153,7 +175,7 @@ export function ControlPanel({
               setActiveScenario(null); // Reset active scenario when user manually changes value
             }}
           >
-            <SelectTrigger className="h-11"> {/* Increased touch target size */}
+            <SelectTrigger className="h-11">
               <SelectValue placeholder="Select a distribution" />
             </SelectTrigger>
             <SelectContent>
@@ -161,6 +183,8 @@ export function ControlPanel({
               <SelectItem value="uniform">Uniform</SelectItem>
               <SelectItem value="skewed">Right-Skewed</SelectItem>
               <SelectItem value="bimodal">Bimodal</SelectItem>
+              <SelectItem value="laplace">Laplace</SelectItem>
+              <SelectItem value="student-t">Student’s t</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -170,7 +194,7 @@ export function ControlPanel({
         <div className="flex flex-wrap gap-2">
           <Button
             onClick={onSample}
-            className="flex-1 h-11 min-w-[120px]" // Larger touch target
+            className="flex-1 h-11 min-w-[120px]"
           >
             Start Sampling
           </Button>
@@ -178,44 +202,30 @@ export function ControlPanel({
           <Button
             onClick={onReset}
             variant="secondary"
-            className="flex-1 h-11 min-w-[120px]" // Larger touch target
+            className="flex-1 h-11 min-w-[120px]"
           >
             Reset
           </Button>
         </div>
         
-        <div className="flex flex-wrap gap-2 justify-between">
-          <div className="flex-1">
-            <Label className="mb-2 block">Theoretical Normal Curve</Label>
-            <ToggleGroup 
-              type="single" 
-              variant="outline"
-              value={showNormalCurve ? "show" : "hide"}
-              onValueChange={(value) => setShowNormalCurve(value === "show")}
-              className="justify-start"
-            >
-              <ToggleGroupItem value="show" className="flex-1">Show</ToggleGroupItem>
-              <ToggleGroupItem value="hide" className="flex-1">Hide</ToggleGroupItem>
-            </ToggleGroup>
+        <div className="flex flex-wrap gap-4 justify-between items-center">
+          <div className="flex items-center">
+            <Toggle
+              pressed={showNormalCurve}
+              onPressedChange={setShowNormalCurve}
+              className="mr-2"
+              aria-label="Toggle Normal Curve"
+            />
+            <Label className="mb-0">Show Theoretical Normal Curve</Label>
           </div>
-          
           <div className="flex flex-wrap gap-2 mt-auto">
             <Button
               onClick={onExport}
               variant="outline"
-              className="h-11" // Larger touch target
+              className="h-11"
             >
               <Download className="mr-2" />
               Export PNG
-            </Button>
-            
-            <Button
-              onClick={onShare}
-              variant="outline"
-              className="h-11" // Larger touch target
-            >
-              <Share className="mr-2" />
-              Share URL
             </Button>
           </div>
         </div>

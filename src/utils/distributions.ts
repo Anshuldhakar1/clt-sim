@@ -1,4 +1,3 @@
-
 // Function to generate random numbers from different distributions
 
 // Normal distribution using Box-Muller transform
@@ -50,6 +49,36 @@ export function generateBimodal(mean1 = -2, mean2 = 2, stdDev = 1, size = 1): nu
   return result;
 }
 
+// Laplace (double exponential) distribution
+export function generateLaplace(mu = 50, b = 10, size = 1): number[] {
+  const result = [];
+  for (let i = 0; i < size; i++) {
+    const u = Math.random() - 0.5;
+    result.push(mu - b * Math.sign(u) * Math.log(1 - 2 * Math.abs(u)));
+  }
+  return result;
+}
+
+// Student's t-distribution using the Box-Muller for normal and sum-of-squares for chi-squared
+export function generateStudentT(df = 5, mu = 50, scale = 10, size = 1): number[] {
+  const result = [];
+  for (let i = 0; i < size; i++) {
+    // Normal(0,1)
+    const u1 = Math.random();
+    const u2 = Math.random();
+    const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    // Chi-squared(df)
+    let y = 0;
+    for (let j = 0; j < df; j++) {
+      const n = Math.sqrt(-2 * Math.log(Math.random())) * Math.cos(2 * Math.PI * Math.random());
+      y += n * n;
+    }
+    const t = z / Math.sqrt(y / df);
+    result.push(mu + scale * t);
+  }
+  return result;
+}
+
 // Updated generateDistributionData with adjusted parameters and more consistent scaling
 export function generateDistributionData(
   distribution: string,
@@ -65,6 +94,10 @@ export function generateDistributionData(
       return generateSkewed(0.5, size).map(x => x * 20 + 10);
     case "bimodal":
       return generateBimodal(30, 70, 10, size);
+    case "laplace":
+      return generateLaplace(50, 10, size);
+    case "student-t":
+      return generateStudentT(5, 50, 10, size);
     default:
       return generateNormal(50, 15, size);
   }

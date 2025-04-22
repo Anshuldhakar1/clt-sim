@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from "react";
 import {
   Bar,
@@ -70,10 +69,10 @@ export function SamplingChart({ sampleMeans, showTheoretical, colorGroups = fals
       setStdDev(sd);
       
       // Generate theoretical normal curve data points
-      if (mean !== null && sd !== null) {
+      if (mean !== null && sd !== null && sd > 0) {
         const minX = Math.min(...sampleMeans) - sd;
         const maxX = Math.max(...sampleMeans) + sd;
-        const step = (maxX - minX) / 50;
+        const step = (maxX - minX) / 80;
         
         const theoreticalData = [];
         for (let x = minX; x <= maxX; x += step) {
@@ -84,6 +83,8 @@ export function SamplingChart({ sampleMeans, showTheoretical, colorGroups = fals
         }
         
         setTheoreticalCurve(theoreticalData);
+      } else {
+        setTheoreticalCurve([]);
       }
     } else {
       setData([]);
@@ -96,12 +97,9 @@ export function SamplingChart({ sampleMeans, showTheoretical, colorGroups = fals
   // Custom bar shape for color-coding
   const renderCustomBar = (props: any) => {
     const { x, y, width, height, colorIndex, index } = props;
-    
-    // Use color grouping if enabled
     const fill = colorGroups 
       ? getBarColor(colorIndex || index, data.length)
       : "hsl(var(--chart-samples))";
-      
     return <rect x={x} y={y} width={width} height={height} fill={fill} />;
   };
 
@@ -144,9 +142,12 @@ export function SamplingChart({ sampleMeans, showTheoretical, colorGroups = fals
               dataKey="y"
               data={theoreticalCurve}
               stroke="#8B5CF6"
-              fill="#8B5CF6"
-              fillOpacity={0.2}
-              isAnimationActive={true}
+              fill="none"
+              dot={false}
+              isAnimationActive={false}
+              strokeWidth={3}
+              animationDuration={400}
+              legendType="none"
             />
           )}
         </ComposedChart>
