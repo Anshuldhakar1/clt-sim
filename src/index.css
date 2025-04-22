@@ -99,7 +99,25 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Enhanced tooltip colors for dark mode */
+    --tooltip-background: 240 10% 3.9%;
+    --tooltip-border: 240 3.7% 15.9%;
+    --tooltip-text: 0 0% 98%;
   }
+}
+
+/* Additional tooltip styles */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background-color: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark .recharts-tooltip-wrapper .recharts-default-tooltip {
+  background-color: hsl(var(--tooltip-background)) !important;
+  border-color: hsl(var(--tooltip-border)) !important;
+  color: hsl(var(--tooltip-text)) !important;
 }
 
 @layer base {

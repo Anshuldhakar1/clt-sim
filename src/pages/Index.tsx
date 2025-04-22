@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from "react";
 import { Navbar } from "@/components/Navbar";
 import { ControlPanel } from "@/components/ControlPanel";
@@ -65,6 +64,10 @@ const Index = () => {
       <Navbar />
       
       <main className="flex-1 container mx-auto p-4 md:p-6 flex flex-col gap-6">
+        {/* Distribution Theory at the top */}
+        <DistributionTheory distribution={distribution} />
+        
+        {/* Controls Panel */}
         <ControlPanel
           sampleSize={sampleSize}
           setSampleSize={setSampleSize}
@@ -76,7 +79,7 @@ const Index = () => {
           onReset={resetSampling}
         />
         
-        {/* Responsive chart layout */}
+        {/* Charts section */}
         <div className={`grid ${isMobile ? 'grid-cols-1 gap-4' : 'grid-cols-1 md:grid-cols-2 gap-6'} h-[250px]`}>
           <ChartContainer title="Population Distribution">
             <PopulationChart distribution={distribution} />
@@ -87,7 +90,7 @@ const Index = () => {
           </ChartContainer>
         </div>
 
-        {/* Comparison chart that shows both distributions together */}
+        {/* Distribution Comparison */}
         <ChartContainer title="Distribution Comparison">
           <OverlappingCurves 
             sampleMeans={sampleMeans} 
@@ -96,48 +99,32 @@ const Index = () => {
           />
         </ChartContainer>
 
-        {/* Statistics and theory information */}
+        {/* Statistics Panel */}
         <StatisticsPanel 
           distribution={distribution}
           sampleMeans={sampleMeans}
           sampleSize={sampleSize}
         />
         
-        {/* Tabs for theory and explanation on mobile */}
+        {/* Explanation Area - Mobile vs Desktop layout */}
         {isMobile ? (
-          <Tabs defaultValue="explanation">
-            <TabsList className="grid grid-cols-2">
-              <TabsTrigger value="explanation">How It Works</TabsTrigger>
-              <TabsTrigger value="theory">Distribution Theory</TabsTrigger>
-            </TabsList>
-            <TabsContent value="explanation">
-              <ExplanationArea 
-                distribution={distribution}
-                sampleSize={sampleSize}
-                numberOfSamples={numberOfSamples}
-                samplesGenerated={samplesGenerated}
-              />
-            </TabsContent>
-            <TabsContent value="theory">
-              <DistributionTheory distribution={distribution} />
-            </TabsContent>
-          </Tabs>
+          <ExplanationArea 
+            distribution={distribution}
+            sampleSize={sampleSize}
+            numberOfSamples={numberOfSamples}
+            samplesGenerated={samplesGenerated}
+          />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1">
             <ExplanationArea 
               distribution={distribution}
               sampleSize={sampleSize}
               numberOfSamples={numberOfSamples}
               samplesGenerated={samplesGenerated}
             />
-            <DistributionTheory distribution={distribution} />
           </div>
         )}
       </main>
-      
-      <footer className="bg-background p-4 text-center text-sm text-muted-foreground border-t">
-        <p>Chart Tales Explorer - Interactive Sampling Distribution Visualizer</p>
-      </footer>
     </div>
   );
 };

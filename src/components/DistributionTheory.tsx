@@ -15,58 +15,64 @@ export function DistributionTheory({ distribution }: DistributionTheoryProps) {
           title: "Normal Distribution",
           icon: <AreaChart className="h-5 w-5" />,
           symbol: "X ~ N(μ, σ²)",
-          description: "The normal distribution is a continuous probability distribution that is symmetric about the mean, showing that data near the mean are more frequent than data far from the mean.",
+          description: "The normal distribution is symmetric about the mean, showing that data near the mean are more frequent than data far from the mean.",
           properties: [
-            "Symmetrical bell-shaped curve",
-            "Described by mean (μ) and standard deviation (σ)",
-            "About 68% of values lie within 1σ of the mean",
-            "About 95% of values lie within 2σ of the mean",
-            "About 99.7% of values lie within 3σ of the mean"
+            "Mean (μ): 50",
+            "Standard Deviation (σ): 15",
+            "Variance (σ²): 225"
           ],
-          formula: "f(x) = (1/σ√2π) × e^(-((x-μ)²/2σ²))"
+          formula: {
+            main: "f(x) = (1/σ√2π) × e^(-((x-μ)²/2σ²))",
+            sampling: "X̄ ~ N(μ, σ²/n)"
+          }
         };
       case "uniform":
         return {
           title: "Uniform Distribution",
           icon: <ChartPie className="h-5 w-5" />,
           symbol: "X ~ U(a, b)",
-          description: "The uniform distribution is a continuous probability distribution where all outcomes in the interval [a, b] are equally likely.",
+          description: "The uniform distribution has equal probability across all values in the interval [a, b].",
           properties: [
-            "Constant probability across the range",
-            "Described by minimum (a) and maximum (b) values",
-            "Mean: μ = (a+b)/2",
-            "Variance: σ² = (b-a)²/12"
+            "Mean (μ) = (a + b)/2 = 50",
+            "Variance (σ²) = (b - a)²/12 ≈ 533",
+            "Standard Deviation (σ) = (b - a)/√12 ≈ 23.1"
           ],
-          formula: "f(x) = 1/(b-a) for a ≤ x ≤ b"
+          formula: {
+            main: "f(x) = 1/(b-a) for x ∈ [a,b]",
+            sampling: "X̄ ~ N(μ, σ²/n) as n → ∞"
+          }
         };
       case "skewed":
         return {
           title: "Right-Skewed Distribution (Exponential)",
           icon: <ScatterChart className="h-5 w-5" />,
           symbol: "X ~ Exp(λ)",
-          description: "The exponential distribution models the time between events in a Poisson process. It has a longer tail to the right, making it right-skewed.",
+          description: "The exponential distribution models the time between events, with a longer tail to the right.",
           properties: [
-            "Memoryless property",
-            "Highest probability density at x = 0",
-            "Mean: μ = 1/λ",
-            "Variance: σ² = 1/λ²",
-            "Standard deviation: σ = 1/λ"
+            "Rate Parameter (λ) = 0.5",
+            "Mean (μ) = 1/λ × 20 + 10",
+            "Variance (σ²) = 1/λ² × 400"
           ],
-          formula: "f(x) = λe^(-λx) for x ≥ 0"
+          formula: {
+            main: "f(x) = λe^(-λx) for x ≥ 0",
+            sampling: "X̄ ~ N(μ, σ²/n) as n → ∞"
+          }
         };
       case "bimodal":
         return {
           title: "Bimodal Distribution",
           icon: <AreaChart className="h-5 w-5" />,
-          symbol: "X ~ Mixture of N(μ₁, σ₁²) and N(μ₂, σ₂²)",
-          description: "A bimodal distribution has two peaks, often resulting from a mixture of two different populations or processes.",
+          symbol: "X ~ 0.5N(30,10²) + 0.5N(70,10²)",
+          description: "A mixture of two normal distributions, resulting in two distinct peaks.",
           properties: [
-            "Two distinct peaks or modes",
-            "Can be modeled as a mixture of two normal distributions",
-            "Mean: depends on the component distributions and mixing proportions",
-            "Variance: depends on component variances and the distance between means"
+            "Mean (μ) = 50",
+            "Variance (σ²) = 400",
+            "Standard Deviation (σ) = 20"
           ],
-          formula: "f(x) = p₁ × f₁(x) + p₂ × f₂(x) where p₁ + p₂ = 1"
+          formula: {
+            main: "f(x) = 0.5φ((x-30)/10) + 0.5φ((x-70)/10)",
+            sampling: "X̄ ~ N(μ, σ²/n) as n → ∞"
+          }
         };
       default:
         return {
@@ -75,7 +81,7 @@ export function DistributionTheory({ distribution }: DistributionTheoryProps) {
           symbol: "",
           description: "Select a distribution to see its properties.",
           properties: [],
-          formula: ""
+          formula: { main: "", sampling: "" }
         };
     }
   };
@@ -85,18 +91,18 @@ export function DistributionTheory({ distribution }: DistributionTheoryProps) {
   return (
     <Card className="w-full">
       <CardContent className="pt-4">
-        <div className="space-y-3">
+        <div className="space-y-4">
           <div className="flex items-center gap-2">
             {theory.icon}
             <h3 className="font-medium text-lg">{theory.title}</h3>
-            <span className="text-sm font-mono bg-muted px-2 py-0.5 rounded-lg">{theory.symbol}</span>
+            <code className="text-sm font-mono bg-muted px-2 py-0.5 rounded-lg">{theory.symbol}</code>
           </div>
           
           <p className="text-sm text-muted-foreground">{theory.description}</p>
           
           {theory.properties.length > 0 && (
-            <div className="space-y-1">
-              <h4 className="font-medium text-sm">Key Properties:</h4>
+            <div className="space-y-2">
+              <h4 className="font-medium text-sm">Parameters & Statistics:</h4>
               <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                 {theory.properties.map((property, index) => (
                   <li key={index}>{property}</li>
@@ -105,11 +111,15 @@ export function DistributionTheory({ distribution }: DistributionTheoryProps) {
             </div>
           )}
           
-          {theory.formula && (
-            <div className="pt-1">
+          {theory.formula.main && (
+            <div className="space-y-2">
               <h4 className="font-medium text-sm">Probability Density Function:</h4>
-              <div className="text-sm font-mono bg-muted p-2 rounded mt-1 overflow-x-auto">
-                {theory.formula}
+              <div className="text-sm font-mono bg-muted/80 p-3 rounded-lg overflow-x-auto dark:bg-muted/20">
+                {theory.formula.main}
+              </div>
+              <h4 className="font-medium text-sm pt-2">Sampling Distribution:</h4>
+              <div className="text-sm font-mono bg-muted/80 p-3 rounded-lg overflow-x-auto dark:bg-muted/20">
+                {theory.formula.sampling}
               </div>
             </div>
           )}
