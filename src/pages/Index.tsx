@@ -8,8 +8,8 @@ import { SamplingChart } from "@/components/SamplingChart";
 import { ExplanationArea } from "@/components/ExplanationArea";
 import { StatisticsPanel } from "@/components/StatisticsPanel";
 import { OverlappingCurves } from "@/components/OverlappingCurves";
-import { DistributionTheoryTabs } from "@/components/DistributionTheoryTabs";
 import { StatisticalEffectPanel } from "@/components/StatisticalEffectPanel";
+import { DistributionTheoryTabs } from "@/components/DistributionTheoryTabs";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const Index = () => {
@@ -22,7 +22,7 @@ const Index = () => {
   const [sampleMeans, setSampleMeans] = useState<number[]>([]);
   const [samplesGenerated, setSamplesGenerated] = useState<number>(0);
   
-  // For theory tabs
+  // For theory tabs (used only for active tab, but all tabs shown at bottom)
   const [theoryTab, setTheoryTab] = useState<string>("normal");
 
   // Detect mobile for responsive layout
@@ -30,11 +30,9 @@ const Index = () => {
 
   // Function to generate samples with faster animation
   const generateSamples = useCallback(() => {
-    // Reset sampling
     setSampleMeans([]);
     setSamplesGenerated(0);
-    
-    // Start generating samples with improved animation timing
+
     let currentSample = 0;
     const interval = setInterval(() => {
       if (currentSample >= numberOfSamples) {
@@ -64,7 +62,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       <main className="flex-1 container mx-auto p-4 md:p-6 flex flex-col gap-6">
-        {/* Controls at the top */}
+        {/* Controls at the very top */}
         <ControlPanel
           sampleSize={sampleSize}
           setSampleSize={setSampleSize}
@@ -86,6 +84,16 @@ const Index = () => {
           </ChartContainer>
         </div>
 
+        {/* Statistical Effects placed right below the graphs */}
+        <StatisticalEffectPanel sampleSize={sampleSize} />
+
+        {/* Statistics panels (Population Parameters & Sample Statistics) */}
+        <StatisticsPanel 
+          distribution={distribution}
+          sampleMeans={sampleMeans}
+          sampleSize={sampleSize}
+        />
+
         {/* Distribution Comparison */}
         <ChartContainer title="Distribution Comparison">
           <OverlappingCurves 
@@ -95,43 +103,27 @@ const Index = () => {
           />
         </ChartContainer>
 
-        {/* Statistical Effects summary */}
-        <StatisticalEffectPanel sampleSize={sampleSize} />
-
-        {/* Statistics panels (side by side on desktop) */}
-        <StatisticsPanel 
-          distribution={distribution}
-          sampleMeans={sampleMeans}
-          sampleSize={sampleSize}
-        />
-
         {/* Explanation Area */}
-        {isMobile ? (
+        <div className="grid grid-cols-1">
           <ExplanationArea 
             distribution={distribution}
             sampleSize={sampleSize}
             numberOfSamples={numberOfSamples}
             samplesGenerated={samplesGenerated}
           />
-        ) : (
-          <div className="grid grid-cols-1">
-            <ExplanationArea 
-              distribution={distribution}
-              sampleSize={sampleSize}
-              numberOfSamples={numberOfSamples}
-              samplesGenerated={samplesGenerated}
-            />
-          </div>
-        )}
+        </div>
 
-        {/* Distribution Theories Tabs at the bottom */}
-        <DistributionTheoryTabs
-          distribution={theoryTab}
-          onTabChange={setTheoryTab}
-        />
+        {/* Distribution Theories Tabs at the bottom, always visible */}
+        <div>
+          <DistributionTheoryTabs
+            distribution={theoryTab}
+            onTabChange={setTheoryTab}
+          />
+        </div>
       </main>
     </div>
   );
 };
 
 export default Index;
+
