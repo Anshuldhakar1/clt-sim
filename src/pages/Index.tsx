@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Navbar } from "@/components/Navbar";
 import { ControlPanel } from "@/components/ControlPanel";
@@ -13,6 +12,7 @@ import { DistributionTheoryTabs } from "@/components/DistributionTheoryTabs";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { exportToPNG, parseUrlParams } from "@/utils/export-utils";
 import { generateDistributionData, calculateMean } from "@/utils/distributions";
+import { PopulationStatisticsPanel } from "@/components/PopulationStatisticsPanel";
 
 const Index = () => {
   // State for control parameters
@@ -92,6 +92,8 @@ const Index = () => {
           activeScenario={activeScenario}
           setActiveScenario={setActiveScenario}
         />
+
+        <PopulationStatisticsPanel distribution={distribution} />
 
         <div className={`grid w-full ${
           isMobile
