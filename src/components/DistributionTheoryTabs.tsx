@@ -102,7 +102,7 @@ interface DistributionTheoryTabsProps {
 
 export function DistributionTheoryTabs({ distribution, onTabChange }: DistributionTheoryTabsProps) {
   return (
-    <div className="space-y-4 w-full overflow-hidden min-h-[440px]"><!-- Added min-h to avoid clipping/collision -->
+    <div className="space-y-4 w-full overflow-hidden min-h-[440px]">{/* Added min-h to avoid clipping/collision */}
       <div>
         <h4 className="font-semibold text-base mb-1">Population Theory</h4>
         <div className="flex flex-wrap gap-2">
