@@ -1,3 +1,4 @@
+
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -76,6 +77,7 @@ export function ControlMainControls({
             <SelectItem value="uniform">Uniform</SelectItem>
             <SelectItem value="skewed">Right-Skewed</SelectItem>
             <SelectItem value="bimodal">Bimodal</SelectItem>
+            <SelectItem value="custom">Custom Data</SelectItem>
           </SelectContent>
         </Select>
       </div>

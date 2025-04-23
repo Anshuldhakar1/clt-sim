@@ -49,22 +49,67 @@ export function generateBimodal(mean1 = -2, mean2 = 2, stdDev = 1, size = 1): nu
   return result;
 }
 
+// Store custom uploaded data
+let customPopulationData: number[] | null = null;
+
+// Function to set custom population data
+export function setCustomPopulationData(data: number[] | null) {
+  customPopulationData = data;
+}
+
+// Function to get custom population data
+export function getCustomPopulationData(): number[] | null {
+  return customPopulationData;
+}
+
 export function generateDistributionData(
   distribution: string,
-  size: number
+  size: number,
+  noiseLevel = 0,
+  outlierLevel = 0
 ): number[] {
+  // First check if we have custom data
+  if (distribution === "custom" && customPopulationData && customPopulationData.length > 0) {
+    // For custom data, we resample with replacement to get the requested size
+    const result = [];
+    for (let i = 0; i < size; i++) {
+      const randomIndex = Math.floor(Math.random() * customPopulationData.length);
+      result.push(customPopulationData[randomIndex]);
+    }
+    return result;
+  }
+
+  // Otherwise generate from the standard distributions
+  let data;
   switch (distribution) {
     case "normal":
-      return generateNormal(50, 15, size);
+      data = generateNormal(50, 15, size);
+      break;
     case "uniform":
-      return generateUniform(10, 90, size);
+      data = generateUniform(10, 90, size);
+      break;
     case "skewed":
-      return generateSkewed(0.5, size).map(x => x * 20 + 10);
+      data = generateSkewed(0.5, size).map(x => x * 20 + 10);
+      break;
     case "bimodal":
-      return generateBimodal(30, 70, 10, size);
+      data = generateBimodal(30, 70, 10, size);
+      break;
     default:
-      return generateNormal(50, 15, size);
+      data = generateNormal(50, 15, size);
   }
+
+  // Apply noise and outliers if requested
+  if (noiseLevel > 0) {
+    const { addNoiseToData } = require('./upload-utils');
+    data = addNoiseToData(data, noiseLevel);
+  }
+  
+  if (outlierLevel > 0) {
+    const { addOutliersToData } = require('./upload-utils');
+    data = addOutliersToData(data, outlierLevel);
+  }
+
+  return data;
 }
 
 // Function to calculate the mean of an array of numbers

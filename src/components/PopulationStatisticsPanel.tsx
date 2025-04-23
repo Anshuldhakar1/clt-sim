@@ -5,9 +5,15 @@ import { useEffect, useState } from "react";
 
 interface PopulationStatisticsPanelProps {
   distribution: string;
+  noiseLevel?: number;
+  outlierLevel?: number;
 }
 
-export function PopulationStatisticsPanel({ distribution }: PopulationStatisticsPanelProps) {
+export function PopulationStatisticsPanel({ 
+  distribution,
+  noiseLevel = 0,
+  outlierLevel = 0
+}: PopulationStatisticsPanelProps) {
   const [stats, setStats] = useState({
     mean: 0,
     median: 0,
@@ -17,7 +23,7 @@ export function PopulationStatisticsPanel({ distribution }: PopulationStatistics
 
   useEffect(() => {
     // Generate a large sample to approximate population parameters
-    const populationData = generateDistributionData(distribution, 10000);
+    const populationData = generateDistributionData(distribution, 10000, noiseLevel, outlierLevel);
     
     // Calculate statistics
     const n = populationData.length;
@@ -44,7 +50,7 @@ export function PopulationStatisticsPanel({ distribution }: PopulationStatistics
       variance: Number(variance.toFixed(2)),
       skewness: Number(skewness.toFixed(2))
     });
-  }, [distribution]);
+  }, [distribution, noiseLevel, outlierLevel]);
 
   return (
     <Card className="w-full">
