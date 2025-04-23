@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -16,11 +15,7 @@ const PRESETS = {
   largeUniform: { sampleSize: 50, numberOfSamples: 300, distribution: "uniform", description: "Large samples: Uniform source" },
   extremeSkewed: { sampleSize: 40, numberOfSamples: 800, distribution: "skewed", description: "Right-skewed: watch CLT normality appear" },
   complexBimodal: { sampleSize: 100, numberOfSamples: 400, distribution: "bimodal", description: "Bimodal mix: normality emerges" },
-  laplaceFocus: { sampleSize: 35, numberOfSamples: 800, distribution: "laplace", description: "Laplace: pointed at mean, heavy tails" },
-  studentTn: { sampleSize: 15, numberOfSamples: 1000, distribution: "student-t", description: "Student's t: fat tails vs normal" },
   manySamplesSmall: { sampleSize: 10, numberOfSamples: 1000, distribution: "uniform", description: "Small n, many samples: see spread" },
-  largeLaplace: { sampleSize: 80, numberOfSamples: 900, distribution: "laplace", description: "Large n Laplace: heavier tails, CLT shines" },
-  bigStudentT: { sampleSize: 40, numberOfSamples: 1000, distribution: "student-t", description: "Big n Student's t: compare tails to normal" },
   midsizedUniform: { sampleSize: 25, numberOfSamples: 700, distribution: "uniform", description: "Mid-size uniform: watch symmetry grow" },
   mediumBimodal: { sampleSize: 50, numberOfSamples: 800, distribution: "bimodal", description: "Bimodal, mid n: mixture smooths out" },
 };
@@ -115,4 +110,3 @@ export function ScenarioPresets({
     </div>
   );
 }
-
