@@ -1,3 +1,4 @@
+
 // Function to generate random numbers from different distributions
 
 // Normal distribution using Box-Muller transform
@@ -62,6 +63,9 @@ export function getCustomPopulationData(): number[] | null {
   return customPopulationData;
 }
 
+// Import the noise and outlier functions using ES module imports instead of require
+import { addNoiseToData, addOutliersToData } from './upload-utils';
+
 export function generateDistributionData(
   distribution: string,
   size: number,
@@ -100,12 +104,10 @@ export function generateDistributionData(
 
   // Apply noise and outliers if requested
   if (noiseLevel > 0) {
-    const { addNoiseToData } = require('./upload-utils');
     data = addNoiseToData(data, noiseLevel);
   }
   
   if (outlierLevel > 0) {
-    const { addOutliersToData } = require('./upload-utils');
     data = addOutliersToData(data, outlierLevel);
   }
 

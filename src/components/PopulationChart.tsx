@@ -13,15 +13,21 @@ import { generateDistributionData, generateHistogramBins } from "@/utils/distrib
 
 interface PopulationChartProps {
   distribution: string;
+  noiseLevel?: number;
+  outlierLevel?: number;
 }
 
-export function PopulationChart({ distribution }: PopulationChartProps) {
+export function PopulationChart({ 
+  distribution, 
+  noiseLevel = 0, 
+  outlierLevel = 0 
+}: PopulationChartProps) {
   const [data, setData] = useState<{ x: number; y: number }[]>([]);
   const [populationMean, setPopulationMean] = useState<number | null>(null);
 
   useEffect(() => {
     // Generate data points for the selected distribution
-    const populationData = generateDistributionData(distribution, 2000);
+    const populationData = generateDistributionData(distribution, 2000, noiseLevel, outlierLevel);
     
     // Calculate the mean
     const mean = populationData.reduce((sum, val) => sum + val, 0) / populationData.length;
@@ -30,7 +36,7 @@ export function PopulationChart({ distribution }: PopulationChartProps) {
     // Create bins for visualization with more detail
     const histogramData = generateHistogramBins(populationData, 40);
     setData(histogramData);
-  }, [distribution]);
+  }, [distribution, noiseLevel, outlierLevel]);
 
   return (
     <ResponsiveContainer width="100%" height="100%">
