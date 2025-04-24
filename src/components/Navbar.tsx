@@ -13,7 +13,7 @@ export function Navbar({ className }: NavbarProps) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <ChartBar className="h-6 w-6 text-primary" />
-          <h1 className="text-xl font-bold tracking-tight">Chart Tales Explorer</h1>
+          <h1 className="text-xl font-bold tracking-tight">CLT Simulator</h1>
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
@@ -22,3 +22,4 @@ export function Navbar({ className }: NavbarProps) {
     </header>
   );
 }
+
