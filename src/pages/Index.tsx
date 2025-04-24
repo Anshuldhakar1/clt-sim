@@ -13,8 +13,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { exportToPNG, parseUrlParams } from "@/utils/export-utils";
 import { generateDistributionData, calculateMean } from "@/utils/distributions";
 import { PopulationStatisticsPanel } from "@/components/PopulationStatisticsPanel";
-import { PopulationDataUpload } from "@/components/PopulationDataUpload";
-import { PopulationNoiseControls } from "@/components/PopulationNoiseControls";
 
 const Index = () => {
   // State for control parameters
@@ -23,10 +21,6 @@ const Index = () => {
   const [distribution, setDistribution] = useState<string>("normal");
   const [showNormalCurve, setShowNormalCurve] = useState<boolean>(false);
   const [activeScenario, setActiveScenario] = useState<string | null>(null);
-
-  // State for noise and outliers
-  const [noiseLevel, setNoiseLevel] = useState<number>(0);
-  const [outlierLevel, setOutlierLevel] = useState<number>(0);
 
   // State for sampling results
   const [sampleMeans, setSampleMeans] = useState<number[]>([]);
@@ -66,7 +60,7 @@ const Index = () => {
       }
       const batchSize = Math.max(1, Math.floor(numberOfSamples / 50));
       for (let i = 0; i < batchSize && currentSample < numberOfSamples; i++) {
-        const sample = generateDistributionData(distribution, sampleSize, noiseLevel, outlierLevel);
+        const sample = generateDistributionData(distribution, sampleSize);
         const sampleMean = calculateMean(sample);
         setSampleMeans((prev: number[]) => [...prev, sampleMean]);
         currentSample++;
@@ -74,24 +68,12 @@ const Index = () => {
       setSamplesGenerated(currentSample);
     }, 40);
     return () => clearInterval(interval);
-  }, [distribution, numberOfSamples, sampleSize, noiseLevel, outlierLevel]);
+  }, [distribution, numberOfSamples, sampleSize]);
 
   // Reset function
   const resetSampling = () => {
     setSampleMeans([]);
     setSamplesGenerated(0);
-  };
-
-  // Handle data upload change
-  const handleDataUploaded = () => {
-    setDistribution("custom");
-    resetSampling();
-  };
-
-  // Handle reset to default distribution
-  const handleResetToDefault = () => {
-    setDistribution("normal");
-    resetSampling();
   };
 
   return (
@@ -111,22 +93,7 @@ const Index = () => {
           setActiveScenario={setActiveScenario}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <PopulationDataUpload 
-            onDataUploaded={handleDataUploaded}
-            onResetToDefault={handleResetToDefault}
-          />
-          <PopulationNoiseControls 
-            onNoiseChange={setNoiseLevel}
-            onOutlierChange={setOutlierLevel}
-          />
-        </div>
-
-        <PopulationStatisticsPanel 
-          distribution={distribution} 
-          noiseLevel={noiseLevel}
-          outlierLevel={outlierLevel}
-        />
+        <PopulationStatisticsPanel distribution={distribution} />
 
         <div className={`grid w-full ${
           isMobile
@@ -136,11 +103,7 @@ const Index = () => {
           {/* Population Chart */}
           <ChartContainer title="Population Distribution">
             <div className={`w-full ${isMobile ? "min-h-[220px] h-[220px]" : "h-[260px]"}`}>
-              <PopulationChart 
-                distribution={distribution} 
-                noiseLevel={noiseLevel}
-                outlierLevel={outlierLevel}
-              />
+              <PopulationChart distribution={distribution} />
             </div>
           </ChartContainer>
           {/* Sampling Distribution */}

@@ -1,4 +1,3 @@
-
 // Function to generate random numbers from different distributions
 
 // Normal distribution using Box-Muller transform
@@ -50,68 +49,22 @@ export function generateBimodal(mean1 = -2, mean2 = 2, stdDev = 1, size = 1): nu
   return result;
 }
 
-// Store custom uploaded data
-let customPopulationData: number[] | null = null;
-
-// Function to set custom population data
-export function setCustomPopulationData(data: number[] | null) {
-  customPopulationData = data;
-}
-
-// Function to get custom population data
-export function getCustomPopulationData(): number[] | null {
-  return customPopulationData;
-}
-
-// Import the noise and outlier functions using ES module imports instead of require
-import { addNoiseToData, addOutliersToData } from './upload-utils';
-
 export function generateDistributionData(
   distribution: string,
-  size: number,
-  noiseLevel = 0,
-  outlierLevel = 0
+  size: number
 ): number[] {
-  // First check if we have custom data
-  if (distribution === "custom" && customPopulationData && customPopulationData.length > 0) {
-    // For custom data, we resample with replacement to get the requested size
-    const result = [];
-    for (let i = 0; i < size; i++) {
-      const randomIndex = Math.floor(Math.random() * customPopulationData.length);
-      result.push(customPopulationData[randomIndex]);
-    }
-    return result;
-  }
-
-  // Otherwise generate from the standard distributions
-  let data;
   switch (distribution) {
     case "normal":
-      data = generateNormal(50, 15, size);
-      break;
+      return generateNormal(50, 15, size);
     case "uniform":
-      data = generateUniform(10, 90, size);
-      break;
+      return generateUniform(10, 90, size);
     case "skewed":
-      data = generateSkewed(0.5, size).map(x => x * 20 + 10);
-      break;
+      return generateSkewed(0.5, size).map(x => x * 20 + 10);
     case "bimodal":
-      data = generateBimodal(30, 70, 10, size);
-      break;
+      return generateBimodal(30, 70, 10, size);
     default:
-      data = generateNormal(50, 15, size);
+      return generateNormal(50, 15, size);
   }
-
-  // Apply noise and outliers if requested
-  if (noiseLevel > 0) {
-    data = addNoiseToData(data, noiseLevel);
-  }
-  
-  if (outlierLevel > 0) {
-    data = addOutliersToData(data, outlierLevel);
-  }
-
-  return data;
 }
 
 // Function to calculate the mean of an array of numbers
