@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
-  base: "./", // Setting base to relative path for GitHub Pages deployment
+  base: "/clt-sim/", // <-- CHANGE THIS LINE
   plugins: [
     react(),
     mode === 'development' &&
